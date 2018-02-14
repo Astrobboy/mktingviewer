@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}File Uploader{% endblock %}
+
+{% block content %}
+
+<form method="post"  action="/lista_videos" >
+	<div class="row">
+		<div class="col-md-8">
+			<table class="table">
+				<tbody class="table-striped">
+
+					<!-- On cells (`td` or `th`) -->
+					<tr>
+					  <td class="active for">Nombre Video</td>
+					</tr>
+					{% for video_name in videos %}
+					<tr>
+						
+						<td class="success">
+							<div class="checkbox">
+								<label>
+								 	<input type="checkbox" name="select_video" value="{{ video_name }}">
+								    {{ video_name }}
+								</label>
+							</div>
+						</td>
+					</tr>
+					{% endfor %}
+
+				</tbody>
+			</table>
+			<input class="btn btn-success" type="submit" value="Cargar Lista">
+		</div>	
+	</div>
+</form>
+{% endblock %}

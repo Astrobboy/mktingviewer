@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3> {{ title }} </h3>
+<div id="hola"></div>
+        <video id="demo" src="{{ videof }}" type="video/mp4" controls autoplay>
+        </video>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/video.js') }}"></script>
+
+{% endblock %}

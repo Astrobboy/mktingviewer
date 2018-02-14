@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body onload="verifica()" onunload="duracion()" >
+	<video id="demo" src="{{ video }}" type="video/mp4" controls autoplay></video>
+	
+	<script type="text/javascript" src="{{ url_for('static', filename='js/video.js') }}"></script>
+<!-- onload="verifica()" -->
+
+</body>
+</html>
+
+

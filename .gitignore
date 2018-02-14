@@ -1,0 +1,42 @@
+### VirtualEnv ###
+# Virtualenv
+# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Mm]an
+[Ss]cripts
+[Tt]cl
+pyvenv.cfg
+.venv
+pip-selfcheck.json
+
+# gedit
+*~
+
+# eclipse
+.settings
+
+# pycharm
+.idea
+
+*.py[cod]
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# tmp files
+.~*
+
+logfile.log
+
+flask
+venv/
