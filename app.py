@@ -19,7 +19,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
 app.config['UPLOAD_FOLDER'] = 'data/'
 app.config['THUMBNAIL_FOLDER'] = 'data/thumbnail/'
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
 
 ALLOWED_EXTENSIONS = set(['mp4', 'png'])
 IGNORED_FILES = set(['.gitignore'])
@@ -69,7 +69,7 @@ def upload():
 
         if files:
             filename = secure_filename(files.filename)
-            filename = gen_file_name(filename)
+            filename = gen_file_name(filename)    
             mime_type = files.content_type
 
             if not allowed_file(files.filename):
@@ -77,9 +77,12 @@ def upload():
 
             else:
                 # save file to disk
+		print "estoy aqui"
                 uploaded_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                files.save(uploaded_file_path)
-
+		print app.config['UPLOAD_FOLDER'], filename
+                print uploaded_file_path
+		files.save(uploaded_file_path)
+		print "aun pase"
                 # create thumbnail after saving
                 if mime_type.startswith('image'):
                     create_thumbnail(filename)
@@ -89,7 +92,7 @@ def upload():
 
                 # return json for js call back
                 result = uploadfile(name=filename, type=mime_type, size=size)
-            
+            	print "#######", result
             return simplejson.dumps({"files": [result.get_file()]})
 
     if request.method == 'GET':
@@ -144,6 +147,7 @@ def biblioteca():
 def filelist():
     video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
     return render_template('filelist.html', videos=video_files)
+	#return renter_template('selecciona.html', ruta='/')
 
 @app.route('/lista_videos', methods=['GET', 'POST'])
 def lista_videos():
@@ -152,15 +156,28 @@ def lista_videos():
         lista_num = len(lista_vi)
         return render_template("mostrar.html", num=lista_num, lista=lista_vi)
     elif len(request.form.getlist('select_video')) == 0:
-        return render_template('selecciona.html')
-    return render_template('selecciona.html')
+        return render_template('selecciona.html', ruta= '/')
+    return render_template('selecciona.html', ruta='/')
+
+@app.route('/play', methods=['GET'])
+def play():
+    video_files = ''
+    for f in os.listdir(video_dir):
+	if f.endswith('mp4'):
+	    video_files += f+' '
+	    video = vide + f
+	#else:
+	#    return render_template('selecciona.html', ruta = '/')
+    return render_template('repro_video.html', nom_videos = video_files, video = video)
+ 
 
 @app.route('/video/<nombre>',methods=['GET'])
 def videos_mostrar(nombre):
-    print nombre
-    video = vide + nombre
-    print video
-    return render_template('repro_video.html', video = video )
+    if (nombre):
+    	video = vide + nombre
+    	return render_template('repro_video.html', video = video )
+    return redirect(url_for('/play'))
+
 
 @app.route('/selecciona',methods=['GET'])
 def selecciona():
