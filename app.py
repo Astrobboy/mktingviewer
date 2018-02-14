@@ -21,7 +21,7 @@ app.config['UPLOAD_FOLDER'] = 'data/'
 app.config['THUMBNAIL_FOLDER'] = 'data/thumbnail/'
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 
-ALLOWED_EXTENSIONS = set(['mp4'])
+ALLOWED_EXTENSIONS = set(['mp4', 'png'])
 IGNORED_FILES = set(['.gitignore'])
 
 bootstrap = Bootstrap(app)
