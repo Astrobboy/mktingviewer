@@ -105,7 +105,7 @@ def upload():
 
         return simplejson.dumps({"files": file_display})
 
-    return redirect(url_for('index'))
+    return redirect(url_for('biblioteca'))
 
 
 @app.route("/delete/<string:filename>", methods=['DELETE'])
