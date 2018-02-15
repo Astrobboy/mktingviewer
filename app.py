@@ -1,6 +1,4 @@
 import os
-import PIL
-from PIL import Image
 import simplejson
 import traceback
 
@@ -92,7 +90,6 @@ def upload():
 
                 # return json for js call back
                 result = uploadfile(name=filename, type=mime_type, size=size)
-            	print "#######", result
             return simplejson.dumps({"files": [result.get_file()]})
 
     if request.method == 'GET':
@@ -164,10 +161,11 @@ def play():
     video_files = ''
     for f in os.listdir(video_dir):
 	if f.endswith('mp4'):
-	    video_files += f+' '
+	    video_files += f+','
 	    video = vide + f
 	#else:
 	#    return render_template('selecciona.html', ruta = '/')
+    print 'hola soy video files ',video_files
     return render_template('repro_video.html', nom_videos = video_files, video = video)
  
 

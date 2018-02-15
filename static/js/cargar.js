@@ -10,5 +10,5 @@ function carga(){
 	console.log(array_de_videos);
 	localStorage.setItem(clave, array_de_videos);
 	localStorage.setItem(clave_cont, cont);
-	location.replace("http://192.168.100.21:8000/video/"+array_de_videos[cont]);
+	location.replace("http://192.168.100.21/video/"+array_de_videos[cont]);
 }
