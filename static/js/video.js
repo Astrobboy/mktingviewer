@@ -54,21 +54,16 @@ window.onbeforeunload = function (event) {
 }
 
 function verifica(){
-	if (localStorage.getItem(clave_actual_t, actual_t)){
+	if (Math.trunc(localStorage.getItem(clave_actual_t)) != 0){
 		actual_t = Math.trunc(localStorage.getItem(clave_actual_t, actual_t));
+		console.log("soy actualt dentro de veri "+actual_t);
 		video.currentTime = actual_t;
-		var url_clave = 'url';
-		var url_location = localStorage.getItem(url_clave);
-		return url_location;
-	}else{
-		return 'http://192.168.100.21/play';
+		localStorage.setItem(clave_actual_t, 0)
+		//var url_clave = 'url';
+		//var url_location = localStorage.getItem(url_clave);
+		//return url_location;
+
 	}
-}
-
-window.load = function () {
-	var url = verifica();
-	location.replace(url);
-
 }
 
 
