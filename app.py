@@ -1,8 +1,10 @@
 import os
 import simplejson
 import traceback
+import json
 
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory
+from flask_socketio import SocketIO,send, emit
 from flask_bootstrap import Bootstrap
 from werkzeug import secure_filename
 
@@ -19,10 +21,20 @@ app.config['UPLOAD_FOLDER'] = 'data/'
 app.config['THUMBNAIL_FOLDER'] = 'data/thumbnail/'
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
 
+
 ALLOWED_EXTENSIONS = set(['mp4', 'png'])
 IGNORED_FILES = set(['.gitignore'])
 
 bootstrap = Bootstrap(app)
+socketio = SocketIO(app)
+
+
+
+@socketio.on("connect")
+def handle_connection():
+    print("Someone is here!")
+    video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+    emit("lista", json.dumps(video_files))
 
 
 def allowed_file(filename):
@@ -141,9 +153,9 @@ def biblioteca():
     return render_template('biblioteca.html')
 
 @app.route('/cargar_lista', methods=['GET', 'POST'])
-def filelist():
+def cargar_lista():
     video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
-    return render_template('filelist.html', videos=video_files)
+    return render_template('cargar_lista.html', videos=video_files)
 	#return renter_template('selecciona.html', ruta='/')
 
 @app.route('/lista_videos', methods=['GET', 'POST'])
@@ -156,6 +168,7 @@ def lista_videos():
         return render_template('selecciona.html', ruta= '/')
     return render_template('selecciona.html', ruta='/')
 
+
 @app.route('/play', methods=['GET'])
 def play():
     video_files = ''
@@ -166,7 +179,7 @@ def play():
 	#else:
 	#    return render_template('selecciona.html', ruta = '/')
     print 'hola soy video files ',video_files
-    return render_template('repro_video.html', nom_videos = video_files, video = video)
+    return render_template('repro_video.html', video = video)
  
 
 @app.route('/video/<nombre>',methods=['GET'])

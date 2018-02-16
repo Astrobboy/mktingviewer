@@ -4,14 +4,15 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body onLoad="setInterval('verifica()',1000);">
-	<label id="lista_videos" style="display:none;">{{ nom_videos }} </label>
+	
 	<video id="demo" src="{{ video }}" type="video/mp4" controls autoplay></video>
 	
 	<script type="text/javascript" src="{{ url_for('static', filename='js/video.js') }}"></script>
-<!-- onload="verifica()" -->
+<!-- onload="verifica()" <label id="lista_videos" style="display:none;">{{ nom_videos }} </label> -->
 
 </body>
 </html>
