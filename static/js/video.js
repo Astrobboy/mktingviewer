@@ -73,7 +73,7 @@ window.onbeforeunload = function (event) {
 function verifica(){
 	localStorage.setItem(clave_duracion_video ,Math.trunc(video.duration));
 	console.log("soy duracion "+Math.trunc(localStorage.getItem(clave_duracion_video)));
-	tiempo_actual = Math.trunc(localStorage.getItem(clave_tiempo_actual));
+	tiempo_actual = Math.trunc(localStorage.getItem('loguarde'));
 	console.log("soy duracion "+tiempo_actual);
 	if (tiempo_actual != 0){
 		console.log("soy actualt dentro de veri "+tiempo_actual);
