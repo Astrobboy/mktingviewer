@@ -33,6 +33,12 @@ function verifica(){
 	tiempo_actual = localStorage.getItem(clave_tiempo_actual);
 	localStorage.setItem(clave_duracion_video ,video.duration);
 	console.log("soy tiempo actual "+tiempo_actual);
+	if (tiempo_actual == 0){
+
+	}else{
+		video.currentTime = tiempo_actual;
+		localStorage.setItem(clave_tiempo_actual, '0');
+	}
 	/*if (tiempo_actual == 0){
 		 console.log("soy actual time "+tiempo_actual);
 	}else{
