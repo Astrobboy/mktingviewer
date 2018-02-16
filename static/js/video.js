@@ -6,7 +6,7 @@ var clave_lista_videos = 'lista_videos',
 	duracion_video = 0,
 	clave_duracion_video = 'termina_en';
 
-
+var nom_videos = new Array();
 var url_location = window.location;
 var url_clave = 'url';
 localStorage.setItem(url_clave, url_location);
@@ -24,6 +24,8 @@ socket.on("lista", (data) => {
 });
 
 
+
+
 var video = document.getElementById("demo");
 //var mostrar = document.getElementById('lista_videos').innerHTML;
 	
@@ -32,9 +34,8 @@ if (localStorage.getItem(url_clave) == 'http://192.168.100.21/play' &&  Math.tru
 	console.log('sigo mi curso normal');
 	console.log(Math.trunc(localStorage.getItem(clave_tiempo_actual)));	
 }else{
-	if (typeof(localStorage.getItem(clave_lista_videos)) == "string"){
-		var nom_videos = new Array();
-		nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));
+	if (localStorage.getItem(url_clave)){
+		location.replace(localStorage.getItem(url_clave));
 	}else{
 		location.replace("http://192.168.100.21/selecciona");
 	}
@@ -110,7 +111,7 @@ function verifica(){
 
 
 video.addEventListener("ended", function() {
-	
+	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));	
 	if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
 		location.replace("http://192.168.100.21/play");
 	}
