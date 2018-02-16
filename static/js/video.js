@@ -51,7 +51,9 @@ function verifica(){
 
 function duracion(){
 	if (video.currentTime == video.duration){
-		tiempo_actual = 0
+		tiempo_actual = 0;
+	}else{
+		tiempo_actual = video.currentTime ;
 	}
 	localStorage.setItem(clave_tiempo_actual, tiempo_actual);
 	localStorage.setItem(url_clave, url_location);
