@@ -17,7 +17,7 @@ var mostrar = document.getElementById('lista_videos').innerHTML;
 
 
 
-console.log("Fuera del if soy tiempo actual");	
+console.log("Fuera del if soy tiempo_actual");	
 console.log(Math.trunc(localStorage.getItem(clave_tiempo_actual)));	
 
 
@@ -72,7 +72,9 @@ window.onbeforeunload = function (event) {
 
 function verifica(){
 	localStorage.setItem(clave_duracion_video ,Math.trunc(video.duration));
+	console.log("soy duracion "+Math.trunc(localStorage.getItem(clave_duracion_video)));
 	tiempo_actual = Math.trunc(localStorage.getItem(clave_tiempo_actual));
+	console.log("soy duracion "+tiempo_actual);
 	if (tiempo_actual != 0){
 		console.log("soy actualt dentro de veri "+tiempo_actual);
 		video.currentTime = tiempo_actual;
