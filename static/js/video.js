@@ -2,10 +2,13 @@ var clave_lista_videos = 'lista_videos',
 	clave_cont = 'cont',
 	cont = Math.trunc(localStorage.getItem('cont')),
 	tiempo_actual = 0,
-	clave_tiempo_actual = 'tiempo_actual';
+	clave_tiempo_actual = 'tiempo_actual',
+	duracion_video = 0,
+	clave_duracion_video = 'termina_en';
 var url_location = window.location;
 var url_clave = 'url';
 localStorage.setItem(url_clave, url_location);
+localStorage.setItem(clave_duracion_video ,Math.trunc(video.duration));
 
 var video = document.getElementById("demo");
 var mostrar = document.getElementById('lista_videos').innerHTML;
@@ -76,7 +79,12 @@ function verifica(){
 
 
 video.addEventListener("ended", function() {
-	var termino = 0;
+	console.log("soy tiempo actual "+Math.trunc(localStorage.getItem(clave_tiempo_actual)));
+	console.log("Soy duracion del video "+Math.trunc(localStorage.getItem(clave_duracion_video)));
+	if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
+		location.replace("http://192.168.100.21/play");
+	}
+	var termino = video.currentTime;
 	localStorage.setItem(clave_tiempo_actual, termino);
 	if (localStorage.getItem(clave_lista_videos)){
 		if(localStorage.getItem(clave_cont)){
@@ -89,10 +97,14 @@ video.addEventListener("ended", function() {
 				cont += 1;
 				localStorage.setItem(clave_cont, cont);
 				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);	
-			};
-		}else {
-			localStorage.setItem(clave_cont, cont);
-			location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
+			}
+		}else{
+			if(Math.trunc(localStorage.getItem('loguarde')) != Math.trunc(video.duration)){
+				location.replace("http://192.168.100.21/play");
+			}else{
+				localStorage.setItem(clave_cont, cont);
+				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
+			}
 		}
 
 		localStorage.setItem(clave_cont, cont);
