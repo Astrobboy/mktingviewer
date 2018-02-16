@@ -9,7 +9,9 @@ var clave_lista_videos = 'lista_videos',
 var nom_videos = new Array();
 var url_location = window.location;
 var url_clave = 'url';
-localStorage.setItem(url_clave, url_location);
+
+var video = document.getElementById("demo");
+//var mostrar = document.getElementById('lista_videos').innerHTML;
 
 
 var socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -24,11 +26,78 @@ socket.on("lista", (data) => {
 });
 
 
+localStorage.setItem(clave_duracion_video ,video.duration);
 
 
-var video = document.getElementById("demo");
-//var mostrar = document.getElementById('lista_videos').innerHTML;
-	
+function verifica(){
+	tiempo_actual = localStorage.getItem(clave_tiempo_actual)
+	console.log("soy tiempo actual "+tiempo_actual);
+	/*if (tiempo_actual == 0){
+		 console.log("soy actual time "+tiempo_actual);
+	}else{
+		video.currentTime = tiempo_actual;
+		console.log("soy tiempo actual antes de guardarme a 0 "+tiempo_actual);   
+		localStorage.setItem(clave_tiempo_actual, '0');
+	}*/
+}
+
+
+function duracion(){
+	tiempo_actual = video.currentTime;
+	localStorage.setItem(clave_tiempo_actual, tiempo_actual);
+	localStorage.setItem(url_clave, url_location);
+	localStorage.setItem('loguarde', tiempo_actual);
+}
+
+window.onbeforeunload = function (event) {
+		duracion();
+}
+
+
+video.addEventListener("ended", function() {
+	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));	
+	if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
+		location.replace("http://192.168.100.21/play");
+	}
+	if (localStorage.getItem(clave_lista_videos)){
+		if(localStorage.getItem(clave_cont)){
+			cont = Math.trunc(localStorage.getItem('cont'));
+			if(cont == (nom_videos.length)-1){
+				cont = 0;
+				localStorage.setItem(clave_cont, cont);
+				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
+			}else{
+				cont += 1;
+				localStorage.setItem(clave_cont, cont);
+				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);	
+			}
+		}else{
+			/*if(Math.trunc(localStorage.getItem('loguarde')) != Math.trunc(video.duration)){
+				location.replace("http://192.168.100.21/play");
+			}else{*/
+				localStorage.setItem(clave_cont, cont);
+				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
+			//}
+		}
+
+		localStorage.setItem(clave_cont, cont);
+		location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
+	}else {
+		location.replace("http://192.168.100.21/play");
+	};
+});
+
+
+
+
+
+
+
+
+
+
+
+/*	
 console.log(localStorage.getItem(url_clave));
 if (localStorage.getItem(url_clave) == 'http://192.168.100.21/play' &&  Math.trunc(localStorage.getItem(clave_tiempo_actual) == 0)){
 	console.log('sigo mi curso normal');
@@ -40,6 +109,8 @@ if (localStorage.getItem(url_clave) == 'http://192.168.100.21/play' &&  Math.tru
 		location.replace("http://192.168.100.21/selecciona");
 	}
 }	
+
+*/
 /*
 if (localStorage.getItem(url_clave) == 'http://192.168.100.21/play' &&  Math.trunc(localStorage.getItem(clave_tiempo_actual) == 0)){
 	console.log('sigo mi curso normal');
@@ -82,66 +153,10 @@ if (localStorage.getItem(url_clave) == 'http://192.168.100.21/play' &&  Math.tru
 
 
 
-function duracion(){
-	tiempo_actual = video.currentTime;
-	localStorage.setItem(clave_tiempo_actual, tiempo_actual);
-	var url_location = window.location;
-	var url_clave = 'url';
-	localStorage.setItem(url_clave, url_location);
-	localStorage.setItem('loguarde', tiempo_actual);
-}
-
-window.onbeforeunload = function (event) {
-		duracion();
-}
-
-function verifica(){
-	localStorage.setItem(clave_duracion_video ,video.duration);
-	tiempo_actual = video.currentTime;
-	console.log("soy tiempo actual "+tiempo_actual);
-	/*if (tiempo_actual == 0){
-		 console.log("soy actual time "+tiempo_actual);
-	}else{
-		video.currentTime = tiempo_actual;
-		console.log("soy tiempo actual antes de guardarme a 0 "+tiempo_actual);   
-		localStorage.setItem(clave_tiempo_actual, '0');
-	}*/
-}
 
 
 
-video.addEventListener("ended", function() {
-	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));	
-	if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
-		location.replace("http://192.168.100.21/play");
-	}
-	if (localStorage.getItem(clave_lista_videos)){
-		if(localStorage.getItem(clave_cont)){
-			cont = Math.trunc(localStorage.getItem('cont'));
-			if(cont == (nom_videos.length)-1){
-				cont = 0;
-				localStorage.setItem(clave_cont, cont);
-				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
-			}else{
-				cont += 1;
-				localStorage.setItem(clave_cont, cont);
-				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);	
-			}
-		}else{
-			/*if(Math.trunc(localStorage.getItem('loguarde')) != Math.trunc(video.duration)){
-				location.replace("http://192.168.100.21/play");
-			}else{*/
-				localStorage.setItem(clave_cont, cont);
-				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
-			//}
-		}
 
-		localStorage.setItem(clave_cont, cont);
-		location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
-	}else {
-		location.replace("http://192.168.100.21/play");
-	};
-});
 
 /*
 if (video.requestFullscreen) {

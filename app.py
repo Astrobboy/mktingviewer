@@ -3,7 +3,7 @@ import simplejson
 import traceback
 import json
 
-from flask import Flask, request, render_template, redirect, url_for, send_from_directory
+from flask import Flask, request, render_template, redirect, url_for, send_from_directory, g
 from flask_socketio import SocketIO,send, emit
 from flask_bootstrap import Bootstrap
 from werkzeug import secure_filename
@@ -28,7 +28,10 @@ IGNORED_FILES = set(['.gitignore'])
 bootstrap = Bootstrap(app)
 socketio = SocketIO(app)
 
-
+@socketio.on('message')
+def handle_message(message):
+    g.ul = message
+    print('received message: ' + message)
 
 @socketio.on("connect")
 def handle_connection():
