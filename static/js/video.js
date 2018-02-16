@@ -9,11 +9,18 @@ var url_location = window.location;
 var url_clave = 'url';
 localStorage.setItem(url_clave, url_location);
 
+
+
 var video = document.getElementById("demo");
 var mostrar = document.getElementById('lista_videos').innerHTML;
-localStorage.setItem(clave_duracion_video ,Math.trunc(video.duration));
-console.log("Fuera del if");	
+
+
+
+
+console.log("Fuera del if soy tiempo actual");	
 console.log(Math.trunc(localStorage.getItem(clave_tiempo_actual)));	
+
+
 if (localStorage.getItem(url_clave) == 'http://192.168.100.21/play' &&  Math.trunc(localStorage.getItem(clave_tiempo_actual) == 0)){
 	console.log('sigo mi curso normal');
 	console.log(Math.trunc(localStorage.getItem(clave_tiempo_actual)));	
@@ -64,6 +71,7 @@ window.onbeforeunload = function (event) {
 }
 
 function verifica(){
+	localStorage.setItem(clave_duracion_video ,Math.trunc(video.duration));
 	tiempo_actual = Math.trunc(localStorage.getItem(clave_tiempo_actual));
 	if (tiempo_actual != 0){
 		console.log("soy actualt dentro de veri "+tiempo_actual);
