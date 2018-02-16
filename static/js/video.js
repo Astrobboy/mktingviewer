@@ -26,11 +26,12 @@ socket.on("lista", (data) => {
 });
 
 
-localStorage.setItem(clave_duracion_video ,video.duration);
+
 
 
 function verifica(){
-	tiempo_actual = localStorage.getItem(clave_tiempo_actual)
+	tiempo_actual = localStorage.getItem(clave_tiempo_actual);
+	localStorage.setItem(clave_duracion_video ,video.duration);
 	console.log("soy tiempo actual "+tiempo_actual);
 	/*if (tiempo_actual == 0){
 		 console.log("soy actual time "+tiempo_actual);
