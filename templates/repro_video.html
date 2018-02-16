@@ -5,6 +5,17 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
 	<script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		const PORT = 5005;
+		const HOST = '127.0.0.1';
+		const dgram = require('dgram');
+		var server = server.dgram.createSocket("udp4");
+		server.on('listening', () => {
+			var address = server.address();
+			console.log("Listening");
+		});
+		server.bind(PORT, HOST);
+	</script>
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body onLoad="setInterval('verifica()',1000);">
