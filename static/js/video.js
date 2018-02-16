@@ -10,7 +10,7 @@ localStorage.setItem(url_clave, url_location);
 var video = document.getElementById("demo");
 var mostrar = document.getElementById('lista_videos').innerHTML;
 
-if (localStorage.setItem(url_clave) == 'http://192.168.100.21/play' &&  Math.trunc(localStorage.setItem(clave_tiempo_actual) == 0)){
+if (localStorage.getItem(url_clave) == 'http://192.168.100.21/play' &&  Math.trunc(localStorage.getItem(clave_tiempo_actual) == 0)){
 	console.log('sigo mi curso normal');	
 }else{
 	if (typeof(localStorage.getItem(clave_lista_videos)) == "string" && localStorage.getItem(clave_lista_videos).indexOf(',') == -1 ){
