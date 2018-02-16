@@ -29,7 +29,7 @@ socket.on("lista", (data) => {
 var video = document.getElementById("demo");
 //var mostrar = document.getElementById('lista_videos').innerHTML;
 	
-
+console.log(localStorage.getItem(url_clave));
 if (localStorage.getItem(url_clave) == 'http://192.168.100.21/play' &&  Math.trunc(localStorage.getItem(clave_tiempo_actual) == 0)){
 	console.log('sigo mi curso normal');
 	console.log(Math.trunc(localStorage.getItem(clave_tiempo_actual)));	
@@ -97,15 +97,15 @@ window.onbeforeunload = function (event) {
 
 function verifica(){
 	localStorage.setItem(clave_duracion_video ,video.duration);
-	tiempo_actual = Math.trunc(localStorage.getItem(clave_tiempo_actual));
+	tiempo_actual = video.currentTime;
 	console.log("soy tiempo actual "+tiempo_actual);
-	if (tiempo_actual == 0){
+	/*if (tiempo_actual == 0){
 		 console.log("soy actual time "+tiempo_actual);
 	}else{
 		video.currentTime = tiempo_actual;
 		console.log("soy tiempo actual antes de guardarme a 0 "+tiempo_actual);   
 		localStorage.setItem(clave_tiempo_actual, '0');
-	}
+	}*/
 }
 
 
