@@ -50,7 +50,9 @@ function verifica(){
 
 
 function duracion(){
-	tiempo_actual = video.currentTime;
+	if (video.currentTime == video.duration){
+		tiempo_actual = 0
+	}
 	localStorage.setItem(clave_tiempo_actual, tiempo_actual);
 	localStorage.setItem(url_clave, url_location);
 	localStorage.setItem('loguarde', tiempo_actual);
