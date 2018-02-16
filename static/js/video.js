@@ -1,8 +1,8 @@
-var clave = 'lista_videos',
+var clave_lista_videos = 'lista_videos',
 	clave_cont = 'cont',
 	cont = Math.trunc(localStorage.getItem('cont')),
-	actual_t = 0,
-	clave_actual_t = 'tiempo_actual';
+	tiempo_actual = 0,
+	clave_tiempo_actual = 'tiempo_actual';
 var url_location = window.location;
 var url_clave = 'url';
 localStorage.setItem(url_clave, url_location);
@@ -10,41 +10,44 @@ localStorage.setItem(url_clave, url_location);
 var video = document.getElementById("demo");
 var mostrar = document.getElementById('lista_videos').innerHTML;
 
-if (typeof(localStorage.getItem(clave)) == "string" && localStorage.getItem(clave).indexOf(',') == -1 ){
-	var nom_videos = new Array();
-	nom_videos.push(localStorage.getItem(clave));
+if (localStorage.setItem(url_clave) == 'http://192.168.100.21/play' &&  Math.trunc(localStorage.setItem(clave_tiempo_actual) == 0)){
+	console.log('sigo mi curso normal');	
 }else{
-	if (localStorage.getItem(clave)){
-	    mostrar = localStorage.getItem(clave);
-	    console.log("hola estoy en mostrar default");
+	if (typeof(localStorage.getItem(clave_lista_videos)) == "string" && localStorage.getItem(clave_lista_videos).indexOf(',') == -1 ){
+		var nom_videos = new Array();
+		nom_videos.push(localStorage.getItem(clave_lista_videos));
 	}else{
-	   if (mostrar){
-               localStorage.setItem(clave, mostrar);
-	       localStorage.getItem(clave);
-		console.log("hola estoy en mostrar guardando en el localstorage");
-	   }else{
-	      location.replace("http://192.168.100.21/selecciona");	
- 	   }
-	}
-	
-	if(mostrar.indexOf(',') != -1){
-	    var separador = ",";
-	}else{
- 	    var separador = " ";
-      	}	
-	var nom_videos = mostrar.split(separador);
-	for (var i = nom_videos.indexOf(''); i <= nom_videos.length; i++) {
-		if (nom_videos[i] == "" | nom_videos[i+1] == "" ){ 
-			nom_videos.splice(i, 1);
-			i = nom_videos.indexOf('')-1
+		if (localStorage.getItem(clave_lista_videos)){
+		    mostrar = localStorage.getItem(clave_lista_videos);
+		}else{
+			if (mostrar){
+	        	localStorage.setItem(clave_lista_videos, mostrar);
+		    	localStorage.getItem(clave_lista_videos);
+			}else{
+		    	location.replace("http://192.168.100.21/selecciona");	
+	 		}
 		}
+		
+		if(mostrar.indexOf(',') != -1){
+		    var separador = ",";
+		}else{
+	 	    var separador = " ";
+	      	}	
+		var nom_videos = mostrar.split(separador);
+		for (var i = nom_videos.indexOf(''); i <= nom_videos.length; i++) {
+			if (nom_videos[i] == "" | nom_videos[i+1] == "" ){ 
+				nom_videos.splice(i, 1);
+				i = nom_videos.indexOf('')-1
+			}
+		}
+		console.log('soy nom_videos '+nom_videos);
 	}
-	console.log('soy nom_videos '+nom_videos);
-}
+}	
+
 
 function duracion(){
-	actual_t = video.currentTime;
-	localStorage.setItem(clave_actual_t, actual_t);
+	tiempo_actual = video.currentTime;
+	localStorage.setItem(clave_tiempo_actual, tiempo_actual);
 	var url_location = window.location;
 	var url_clave = 'url';
 	localStorage.setItem(url_clave, url_location);
@@ -55,26 +58,24 @@ window.onbeforeunload = function (event) {
 }
 
 function verifica(){
-	actual_t = Math.trunc(localStorage.getItem(clave_actual_t);
-	if (actual_t != 0){
-		console.log("soy actualt dentro de veri "+actual_t);
-		video.currentTime = actual_t;
-		localStorage.setItem(clave_actual_t, '0');
-		//var url_clave = 'url';
-		//var url_location = localStorage.getItem(url_clave);
-		//return url_location;
-
+	tiempo_actual = Math.trunc(localStorage.getItem(clave_tiempo_actual));
+	if (tiempo_actual != 0){
+		console.log("soy actualt dentro de veri "+tiempo_actual);
+		video.currentTime = tiempo_actual;
+		localStorage.setItem(clave_tiempo_actual, '0');
+		console.log("soy tiempo actual dentro de verifica "+tiempo_actual);
 	}else{
 	    
-	    console.log("soy actual time fuera "+actual_t);
+	    console.log("soy actual time en el else "+tiempo_actual);
 	}
 }
 
 
 
 video.addEventListener("ended", function() {
-	localStorage.setItem(clave_actual_t, '0');
-	if (localStorage.getItem(clave)){
+	var termino = 0;
+	localStorage.setItem(clave_tiempo_actual, termino);
+	if (localStorage.getItem(clave_lista_videos)){
 		if(localStorage.getItem(clave_cont)){
 			cont = Math.trunc(localStorage.getItem('cont'));
 			if(cont == (nom_videos.length)-1){
