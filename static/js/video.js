@@ -8,10 +8,10 @@ var clave_lista_videos = 'lista_videos',
 var url_location = window.location;
 var url_clave = 'url';
 localStorage.setItem(url_clave, url_location);
-localStorage.setItem(clave_duracion_video ,Math.trunc(video.duration));
 
 var video = document.getElementById("demo");
 var mostrar = document.getElementById('lista_videos').innerHTML;
+localStorage.setItem(clave_duracion_video ,Math.trunc(video.duration));
 console.log("Fuera del if");	
 console.log(Math.trunc(localStorage.getItem(clave_tiempo_actual)));	
 if (localStorage.getItem(url_clave) == 'http://192.168.100.21/play' &&  Math.trunc(localStorage.getItem(clave_tiempo_actual) == 0)){
