@@ -39,6 +39,7 @@ if (typeof(localStorage.getItem(clave)) == "string" && localStorage.getItem(clav
 			i = nom_videos.indexOf('')-1
 		}
 	}
+	console.log('soy nom_videos '+nom_videos);
 }
 
 function duracion(){
@@ -54,21 +55,25 @@ window.onbeforeunload = function (event) {
 }
 
 function verifica(){
-	if (Math.trunc(localStorage.getItem(clave_actual_t)) != 0){
-		actual_t = Math.trunc(localStorage.getItem(clave_actual_t, actual_t));
+	actual_t = Math.trunc(localStorage.getItem(clave_actual_t);
+	if (actual_t != 0){
 		console.log("soy actualt dentro de veri "+actual_t);
 		video.currentTime = actual_t;
-		localStorage.setItem(clave_actual_t, 0)
+		localStorage.setItem(clave_actual_t, '0');
 		//var url_clave = 'url';
 		//var url_location = localStorage.getItem(url_clave);
 		//return url_location;
 
+	}else{
+	    
+	    console.log("soy actual time fuera "+actual_t);
 	}
 }
 
 
 
 video.addEventListener("ended", function() {
+	localStorage.setItem(clave_actual_t, '0');
 	if (localStorage.getItem(clave)){
 		if(localStorage.getItem(clave_cont)){
 			cont = Math.trunc(localStorage.getItem('cont'));
