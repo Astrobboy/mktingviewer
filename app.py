@@ -33,6 +33,11 @@ def handle_message(message):
     g.ul = message
     print('received message: ' + message)
 
+@socketio.on('json')
+def handle_json(json):
+    send(json, json=True)
+
+
 @socketio.on("connect")
 def handle_connection():
     print("Someone is here!")

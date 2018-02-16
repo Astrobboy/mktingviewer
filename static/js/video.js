@@ -25,6 +25,12 @@ socket.on("lista", (data) => {
 	}
 });
 
+socket.on((respuesta) =>{
+	console.log(respuesta);
+    socket.emit("url_change",JSON.stringify(window.location));
+});
+
+
 
 
 
