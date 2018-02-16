@@ -53,6 +53,7 @@ function duracion(){
 	var url_location = window.location;
 	var url_clave = 'url';
 	localStorage.setItem(url_clave, url_location);
+	localStorage.setItem('loguarde', tiempo_actual);
 }
 
 window.onbeforeunload = function (event) {
