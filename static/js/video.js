@@ -63,6 +63,7 @@ window.onbeforeunload = function (event) {
 
 video.addEventListener("ended", function() {
 	localStorage.setItem(clave_tiempo_actual, '0');
+	localStorage.setItem('guarde_ono', 'loguarde en cero');
 	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));	
 	if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
 		location.replace("http://192.168.100.21/play");
