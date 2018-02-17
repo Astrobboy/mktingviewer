@@ -211,7 +211,7 @@ def cargar_db():
         db.session.merge(list_videos)
         db.session.commit()
         db.session.close()
-    return "guarde"
+    return render_template('biblioteca.html')
 
 
 if __name__ == '__main__':
