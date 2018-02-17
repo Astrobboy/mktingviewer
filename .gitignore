@@ -26,3 +26,4 @@ logfile.log
 
 flask
 venv/
+*.db

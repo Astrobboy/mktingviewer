@@ -3,15 +3,17 @@
 
 {% block content %}
 <div class="col-md-8">
-	<ul class="list-group" >
-		{% for video_n in lista %}
-		<li class="list-group-item list-group-item-warning video">{{ video_n }}</li>
-		{% endfor %}
-		<input class="btn btn-success" type="submit" value="Cargar Videos" onclick="carga()">
-	</ul>
-
+	<form method="post"  action="/cargar_db" >
+		<ul class="list-group" >
+			{% for video_n in lista %}
+			<li class="list-group-item list-group-item-warning video">{{ video_n }}</li>
+			{% endfor %}
+			<input class="btn btn-success" type="submit" value="Cargar Videos">
+		</ul>
+	</form>
 </div>
+	<!--
 	<script src="{{ url_for('static', filename='js/cargar.js') }}"></script>
-
+	-->
 {% endblock %}
 

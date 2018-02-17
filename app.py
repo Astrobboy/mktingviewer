@@ -10,16 +10,15 @@ from werkzeug import secure_filename
 
 from lib.upload_file import uploadfile
 
+from model import Video_lista, db
+
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
 
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'hard to guess string'
-app.config['UPLOAD_FOLDER'] = 'data/'
-app.config['THUMBNAIL_FOLDER'] = 'data/thumbnail/'
-app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
+app.config.from_pyfile('config.cfg')
 
 
 ALLOWED_EXTENSIONS = set(['mp4', 'png'])
@@ -41,7 +40,7 @@ def handle_json(json):
 @socketio.on("connect")
 def handle_connection():
     print("Someone is here!")
-    video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+    video_files = User_lista.query.get(1)
     emit("lista", json.dumps(video_files))
 
 
@@ -166,6 +165,7 @@ def cargar_lista():
     return render_template('cargar_lista.html', videos=video_files)
 	#return renter_template('selecciona.html', ruta='/')
 
+"""
 @app.route('/lista_videos', methods=['GET', 'POST'])
 def lista_videos():
     if request.method == 'POST':
@@ -175,7 +175,7 @@ def lista_videos():
     elif len(request.form.getlist('select_video')) == 0:
         return render_template('selecciona.html', ruta= '/')
     return render_template('selecciona.html', ruta='/')
-
+"""
 
 @app.route('/play', methods=['GET'])
 def play():
@@ -201,6 +201,18 @@ def videos_mostrar(nombre):
 @app.route('/selecciona',methods=['GET'])
 def selecciona():
     return render_template('selecciona.html')
+
+@app.route('/cargar_db',methods=['GET', 'POST'])
+def cargar_db():
+    if request.method == 'POST':
+        lista = request.form.getlist('select_video')
+        list_videos = User_lista.query.get(1)
+        list_videos.lista = json.dumps(lista)
+        db.session.merge(list_videos)
+        db.session.commit()
+        db.session.close()
+    return "guarde"
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
