@@ -13,7 +13,7 @@ var url_clave = 'url';
 var video = document.getElementById("demo");
 
 
-var socket = io.connect('http://' + document.domain + ':' + location.port);
+//var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 
 function verifica(){
