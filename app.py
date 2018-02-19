@@ -34,17 +34,7 @@ def saber_ip():
         ip = request.headers.getlist("X-Forwarded-For")[0]
     else:
         ip = request.remote_addr
-    return ip
-
-def guardar_db(variable):
-    db.session.add(variable)
-    db.session.commit()
-    db.session.close()
-
-def cambiar_db(variable):
-    db.session.merge(variable)
-    db.session.commit()
-    db.session.close()    
+    return ip    
 
 @socketio.on('message')
 def handle_message(message):
@@ -69,12 +59,16 @@ def handle_url(url, nom_video):
         url_guardar.url = url
         url_guardar.nom_video = nom_video
         url_guardar.nom_video = ip
-        cambiar_db(url_guardar)
+        db.session.merge(url_guardar)
+        db.session.commit()
+        db.session.close()
     else:
         url_guardar.url = url
         url_guardar.nom_video = nom_video
         url_guardar.nom_video = ip
-        guardar_db(url_guardar)
+        db.session.merge(url_guardar)
+        db.session.commit()
+        db.session.close()
 
 
 def allowed_file(filename):
@@ -224,19 +218,25 @@ def cargar_db():
         lista = request.form.getlist('select_video')
         list_videos = Video_lista.query.get(1)
         list_videos.lista = json.dumps(lista)
-        guardar_db(list_videos)
+        db.session.merge(list_videos)
+        db.session.commit()
+        db.session.close()
         ip = saber_ip()
         url_guardar = Url.query.get(ip=ip)
         if url_guardar.ip == ip:     
             url_guardar.url = 'http://192.168.100.21/play'
             url_guardar.nom_video = lista[0]
             url_guardar.ip
-            cambiar_db(url_guardar)
+            db.session.merge(url_guardar)
+            db.session.commit()
+            db.session.close()
         else:
             url_guardar.url = 'http://192.168.100.21/play'
             url_guardar.nom_video = lista[0]
             url_guardar.ip
-            guardar_db(url_guardar)
+            db.session.add(url_guardar)
+            db.session.commit()
+            db.session.close()
     return render_template('biblioteca.html')
 
 
