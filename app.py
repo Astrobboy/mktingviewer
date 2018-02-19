@@ -194,12 +194,17 @@ def cargar_lista():
 def play():
     ip = saber_ip()
     url_enviar = Url.query.filter_by(ip=ip).first()
-    if url_enviar: 
-        video = url_enviar.nom_video
-    else:
-        video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
-        video = video_files[0]
-    db.session.close()
+    try:
+        if url_enviar: 
+            video = url_enviar.nom_video
+        else:
+            video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+            video = video_files[0]
+    except:
+        print "aqui doy el error ####################"
+        session.rollback()
+    finally:
+        session.close()
     return render_template('repro_video.html', video = vide + video)
  
 
