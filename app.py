@@ -50,6 +50,8 @@ def handle_json(json):
 def handle_connection():
     video_files = Video_lista.query.get(1)
     emit("lista", json.dumps(video_files.lista))
+    db.session.commit()
+    db.session.close()
 
 @socketio.on("url_change")
 def handle_url(url, nom_video):
