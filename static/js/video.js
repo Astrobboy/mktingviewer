@@ -42,7 +42,7 @@ window.onbeforeunload = function (event) {
 
 function prueba(){
 	var xhr = new XMLHttpRequest();
-	xhr.open("GET","http://127.0.0.1:5000/1");
+	xhr.open("GET","http://192.168.100.21/doy_json");
 	xhr.send();
 	xhr.onreadystatechange = function() {
 	    if(xhr.readyState == 4 && xhr.status == 200){
