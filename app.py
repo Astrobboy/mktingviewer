@@ -34,7 +34,7 @@ def saber_ip():
         ip = request.headers.getlist("X-Forwarded-For")[0]
     else:
         ip = request.remote_addr
-    return ip    
+    return str(ip)    
 
 @socketio.on('message')
 def handle_message(message):
