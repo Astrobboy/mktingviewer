@@ -54,21 +54,26 @@ def handle_connection():
 @socketio.on("url_change")
 def handle_url(url, nom_video):
     ip = saber_ip()
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@ sigo"
     url_guardar = Url.query.filter_by(ip=ip).first()
-    if url_guardar:
-        if url_guardar.ip == ip:
-            url_guardar.url = url
-            url_guardar.nom_video = nom_video
-            url_guardar.ip = ip
-            db.session.merge(url_guardar)
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@ sigo 2"
+    try:
+        if url_guardar:
+            if url_guardar.ip == ip:
+                url_guardar.url = url
+                url_guardar.nom_video = nom_video
+                url_guardar.ip = ip
+                db.session.merge(url_guardar)
+                db.session.commit()
+                db.session.close()
+        else:
+            url_guardar = Url(url = url, nom_video = nom_video, ip = ip)
+            db.session.add(url_guardar)
             db.session.commit()
             db.session.close()
-    else:
-        url_guardar = Url(url = url, nom_video = nom_video, ip = ip)
-        db.session.add(url_guardar)
-        db.session.commit()
-        db.session.close()
-
+    except:
+        print "aqui doy el error ####################"
+        db.session.rollback()
 
 def allowed_file(filename):
     return '.' in filename and \
