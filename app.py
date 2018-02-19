@@ -176,17 +176,6 @@ def cargar_lista():
     return render_template('cargar_lista.html', videos=video_files)
 	#return renter_template('selecciona.html', ruta='/')
 
-"""
-@app.route('/lista_videos', methods=['GET', 'POST'])
-def lista_videos():
-    if request.method == 'POST':
-        lista_vi = request.form.getlist('select_video')
-        lista_num = len(lista_vi)
-        return render_template("mostrar.html", num=lista_num, lista=lista_vi)
-    elif len(request.form.getlist('select_video')) == 0:
-        return render_template('selecciona.html', ruta= '/')
-    return render_template('selecciona.html', ruta='/')
-"""
 
 @app.route('/play', methods=['GET'])
 def play():
@@ -218,7 +207,11 @@ def cargar_db():
         lista = request.form.getlist('select_video')
         list_videos = Video_lista.query.get(1)
         list_videos.lista = json.dumps(lista)
+        url_guardar = Url.query.get(1)
+        url_guardar.url = 'http://192.168.100.21/play'
+        url_guardar.nom_video = list_videos.lista[0]
         db.session.merge(list_videos)
+        db.session.merge(url_guardar)
         db.session.commit()
         db.session.close()
     return render_template('biblioteca.html')
