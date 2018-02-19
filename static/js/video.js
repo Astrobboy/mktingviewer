@@ -46,7 +46,7 @@ function prueba(){
 	xhr.send();
 	xhr.onreadystatechange = function() {
 	    if(xhr.readyState == 4 && xhr.status == 200){
-	    	localStorage.setItem(clave_lista_videos, JSON.parse(xhr.responseText));
+	    	localStorage.setItem(clave_lista_videos, xhr.responseText);
 	        console.log(xhr.responseText);
 	    }
 	}
