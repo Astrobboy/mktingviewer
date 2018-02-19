@@ -177,7 +177,7 @@ def cargar_lista():
 def play():
     lista_video = Video_lista.query.get(1)
     if lista_video: 
-        video = json.loads(var.lista)[0]
+        video = json.loads(lista_video.lista)[0]
     else:
         video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
         video = video_files[0]
