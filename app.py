@@ -193,9 +193,12 @@ def cargar_lista():
 @app.route('/play', methods=['GET'])
 def play():
     ip = saber_ip()
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@ sigo"
     url_enviar = Url.query.filter_by(ip=ip).first()
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@ sigo 2"
     try:
         if url_enviar: 
+            print "#########@@@@@@@@@@@@@@@ sigo 3"
             video = url_enviar.nom_video
         else:
             video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
