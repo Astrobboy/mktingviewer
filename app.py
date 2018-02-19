@@ -199,7 +199,6 @@ def play():
     else:
         video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
         video = video_files[0]
-    db.session.commit()
     db.session.close()
     return render_template('repro_video.html', video = vide + video)
  
