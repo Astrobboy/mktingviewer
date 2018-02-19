@@ -180,10 +180,11 @@ def cargar_lista():
 @app.route('/play', methods=['GET'])
 def play():
     url_enviar = Url.query.get(1)
-    if url_enviar.url == 'http://192.168.100.21/play':
-        video = url_enviar.nom_video
-    else:
-        video = url_enviar.nom_video
+    video = url_enviar.nom_video
+    print "##########"
+    print url_enviar.nom_video
+    print url_enviar.url
+    print "##########"
     db.session.commit()
     db.session.close()
     return render_template('repro_video.html', video = vide + video)
