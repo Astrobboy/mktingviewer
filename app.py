@@ -43,7 +43,7 @@ def handle_json(json):
 def handle_connection():
     print("Someone is here!")
     video_files = Video_lista.query.get(1)
-    emit("lista", json.dumps(video_files))
+    emit("lista", json.dumps(video_files.lista))
 
 
 def allowed_file(filename):
