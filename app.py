@@ -58,14 +58,14 @@ def handle_url(url, nom_video):
     if url.ip == ip:
         url_guardar.url = url
         url_guardar.nom_video = nom_video
-        url_guardar.nom_video = ip
+        url_guardar.ip = ip
         db.session.merge(url_guardar)
         db.session.commit()
         db.session.close()
     else:
         url_guardar.url = url
         url_guardar.nom_video = nom_video
-        url_guardar.nom_video = ip
+        url_guardar.ip = ip
         db.session.merge(url_guardar)
         db.session.commit()
         db.session.close()
@@ -227,14 +227,14 @@ def cargar_db():
         if url_guardar.ip == ip:     
             url_guardar.url = 'http://192.168.100.21/play'
             url_guardar.nom_video = lista[0]
-            url_guardar.ip
+            url_guardar.ip = ip
             db.session.merge(url_guardar)
             db.session.commit()
             db.session.close()
         else:
             url_guardar.url = 'http://192.168.100.21/play'
             url_guardar.nom_video = lista[0]
-            url_guardar.ip
+            url_guardar.ip = ip
             db.session.add(url_guardar)
             db.session.commit()
             db.session.close()
