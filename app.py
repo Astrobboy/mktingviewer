@@ -40,7 +40,7 @@ def handle_json(json):
 @socketio.on("connect")
 def handle_connection():
     print("Someone is here!")
-    video_files = User_lista.query.get(1)
+    video_files = Video_lista.query.get(1)
     emit("lista", json.dumps(video_files))
 
 
