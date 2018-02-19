@@ -24,6 +24,7 @@ app.config.from_pyfile('config.cfg')
 ALLOWED_EXTENSIONS = set(['mp4', 'png'])
 IGNORED_FILES = set(['.gitignore'])
 
+db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 socketio = SocketIO(app)
 
