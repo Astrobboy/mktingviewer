@@ -58,9 +58,10 @@ window.onbeforeunload = function (event) {
 
 socket.on("lista", (data) => {
 	localStorage.setItem(clave_lista_videos, JSON.parse(data));
-	console.log("recibi los datos");	
+	console.log("recibi los datos");
+	enviar_url_nomVideo();	
 });
-enviar_url_nomVideo();
+
 
 
 video.addEventListener("ended", function() {
