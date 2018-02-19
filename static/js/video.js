@@ -17,12 +17,8 @@ var video = document.getElementById("demo");
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 socket.on("lista", (data) => {
-	if (localStorage.getItem(clave_lista_videos)){
-		console.log("ya tengo una lista");
-	}else {
-		localStorage.setItem(clave_lista_videos, data);
-	    console.log("recibi los datos");	
-	}
+	localStorage.setItem(JSON.parse(clave_lista_videos), data);
+	console.log("recibi los datos");	
 });
 
 socket.on((respuesta) =>{
