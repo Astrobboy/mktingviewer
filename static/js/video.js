@@ -15,10 +15,15 @@ var video = document.getElementById("demo");
 
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-socket.on("lista", (data) => {
-	localStorage.setItem(clave_lista_videos, JSON.parse(data));
-	console.log("recibi los datos");	
-});
+
+
+
+function enviar_url_nomVideo(){
+	cont = Math.trunc(localStorage.getItem('cont'));
+	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));
+	socket.emit("url_change", window.location.href, nom_videos[cont]);
+}
+
 
 function verifica(){
 	tiempo_actual = localStorage.getItem(clave_tiempo_actual);
@@ -42,16 +47,20 @@ function duracion(){
 	localStorage.setItem(clave_tiempo_actual, tiempo_actual);
 	localStorage.setItem(url_clave, url_location);
     //
-    cont = Math.trunc(localStorage.getItem('cont'));
-    nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));
-    var nom_video = nom_videos[cont];
-    dic_video = {'url':window.location.href, 'nom_video':nom_video} 
-    socket.emit("url_change",dic_video);
+    enviar_url_nomVideo();
 }
 
 window.onbeforeunload = function (event) {
 		duracion();
 }
+
+//sockets
+
+socket.on("lista", (data) => {
+	localStorage.setItem(clave_lista_videos, JSON.parse(data));
+	console.log("recibi los datos");	
+});
+enviar_url_nomVideo();
 
 
 video.addEventListener("ended", function() {

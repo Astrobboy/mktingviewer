@@ -29,6 +29,23 @@ db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 socketio = SocketIO(app)
 
+def saber_ip():
+    if request.headers.getlist("X-Forwarded-For"):
+        ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        ip = request.remote_addr
+    return ip
+
+def guardar_db(variable):
+    db.session.add(variable)
+    db.session.commit()
+    db.session.close()
+
+def cambiar_db(variable):
+    db.session.merge(variable)
+    db.session.commit()
+    db.session.close()    
+
 @socketio.on('message')
 def handle_message(message):
     g.ul = message
@@ -41,20 +58,23 @@ def handle_json(json):
 
 @socketio.on("connect")
 def handle_connection():
-    print("Someone is here!")
     video_files = Video_lista.query.get(1)
     emit("lista", json.dumps(video_files.lista))
 
 @socketio.on("url_change")
-def handle_url(url):
-    url_guardar = Url.query.get(1)
-    url_guardar.url = url['url']
-    url_guardar.nom_video = url['nom_video']
-    db.session.merge(url_guardar)
-    db.session.commit()
-    db.session.close()
-    print "llegue aqui ######################"
-    print url
+def handle_url(url, nom_video):
+    ip = saber_ip()
+    url_guardar = Url.query.get(ip=ip)
+    if url.ip == ip:
+        url_guardar.url = url
+        url_guardar.nom_video = nom_video
+        url_guardar.nom_video = ip
+        cambiar_db(url_guardar)
+    else:
+        url_guardar.url = url
+        url_guardar.nom_video = nom_video
+        url_guardar.nom_video = ip
+        guardar_db(url_guardar)
 
 
 def allowed_file(filename):
@@ -107,12 +127,10 @@ def upload():
 
             else:
                 # save file to disk
-		print "estoy aqui"
                 uploaded_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 		print app.config['UPLOAD_FOLDER'], filename
                 print uploaded_file_path
 		files.save(uploaded_file_path)
-		print "aun pase"
                 # create thumbnail after saving
                 if mime_type.startswith('image'):
                     create_thumbnail(filename)
@@ -206,15 +224,19 @@ def cargar_db():
         lista = request.form.getlist('select_video')
         list_videos = Video_lista.query.get(1)
         list_videos.lista = json.dumps(lista)
-        db.session.merge(list_videos)
-        db.session.commit()
-        db.session.close()
-        url_guardar = Url.query.get(1)
-        url_guardar.url = 'http://192.168.100.21/play'
-        url_guardar.nom_video = lista[0]
-        db.session.merge(url_guardar)
-        db.session.commit()
-        db.session.close()
+        guardar_db(list_videos)
+        ip = saber_ip()
+        url_guardar = Url.query.get(ip=ip)
+        if url_guardar.ip == ip:     
+            url_guardar.url = 'http://192.168.100.21/play'
+            url_guardar.nom_video = lista[0]
+            url_guardar.ip
+            cambiar_db(url_guardar)
+        else:
+            url_guardar.url = 'http://192.168.100.21/play'
+            url_guardar.nom_video = lista[0]
+            url_guardar.ip
+            guardar_db(url_guardar)
     return render_template('biblioteca.html')
 
 
