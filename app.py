@@ -209,7 +209,7 @@ def cargar_db():
         list_videos.lista = json.dumps(lista)
         url_guardar = Url.query.get(1)
         url_guardar.url = 'http://192.168.100.21/play'
-        url_guardar.nom_video = list_videos.lista[0]
+        url_guardar.nom_video = lista[0]
         db.session.merge(list_videos)
         db.session.merge(url_guardar)
         db.session.commit()
