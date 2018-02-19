@@ -17,7 +17,7 @@ var video = document.getElementById("demo");
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 socket.on("lista", (data) => {
-	localStorage.setItem(JSON.parse(clave_lista_videos), data);
+	localStorage.setItem(clave_lista_videos, JSON.parse(data));
 	console.log("recibi los datos");	
 });
 
@@ -69,8 +69,6 @@ window.onbeforeunload = function (event) {
 
 video.addEventListener("ended", function() {
 	localStorage.setItem(clave_tiempo_actual, '0');
-	localStorage.setItem("este es el valor", localStorage.getItem(clave_tiempo_actual));
-	localStorage.setItem('guarde_ono', 'loguarde en cero');
 	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));	
 	if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
 		location.replace("http://192.168.100.21/play");
