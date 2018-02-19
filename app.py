@@ -56,7 +56,7 @@ def handle_url(url, nom_video):
     ip = saber_ip()
     url_guardar = Url.query.filter_by(ip=ip).first()
     if url_guardar:
-        if url.ip == ip:
+        if url_guardar.ip == ip:
             url_guardar.url = url
             url_guardar.nom_video = nom_video
             url_guardar.ip = ip
