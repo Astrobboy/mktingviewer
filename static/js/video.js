@@ -40,14 +40,28 @@ window.onbeforeunload = function (event) {
 		duracion();
 }
 
-//sockets
+function prueba(){
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET","http://127.0.0.1:5000/1");
+	xhr.send();
+	xhr.onreadystatechange = function() {
+	    if(xhr.readyState == 4 && xhr.status == 200){
+	    	localStorage.setItem(clave_lista_videos, JSON.parse(xhr.responseText));
+	        console.log(xhr.responseText);
+	    }
+	}
+}
 
+
+//sockets
+/*
 socket.on("lista", (data) => {
 	localStorage.setItem(clave_lista_videos, JSON.parse(data));
 	console.log("recibi los datos");	
 	reconnection: false;
 });
-
+*/
+prueba()
 
 
 video.addEventListener("ended", function() {

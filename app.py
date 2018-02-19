@@ -27,15 +27,8 @@ IGNORED_FILES = set(['.gitignore'])
 
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
-socketio = SocketIO(app)
-
-def saber_ip():
-    if request.headers.getlist("X-Forwarded-For"):
-        ip = request.headers.getlist("X-Forwarded-For")[0]
-    else:
-        ip = request.remote_addr
-    return str(ip)    
-
+socketio = SocketIO(app)   
+"""
 @socketio.on('message')
 def handle_message(message):
     g.ul = message
@@ -52,6 +45,7 @@ def handle_connection():
     emit("lista", json.dumps(video_files.lista))
     db.session.commit()
     db.session.close()
+"""
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -208,6 +202,14 @@ def cargar_db():
         db.session.commit()
         db.session.close()
     return render_template('biblioteca.html')
+
+
+@app.route('/doy_json', methods=['GET'])
+def doy_json():
+    lista_video = Video_lista.query.get(1)
+    db.session.commit()
+    db.session.close()
+    return lista_video.lista
 
 
 if __name__ == '__main__':
