@@ -186,7 +186,7 @@ def play():
         video = url_enviar.nom_video
     db.session.commit()
     db.session.close()
-    return render_template('repro_video.html', video = video)
+    return render_template('repro_video.html', video = vide + video)
  
 
 @app.route('/video/<nombre>',methods=['GET'])
