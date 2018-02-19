@@ -202,9 +202,9 @@ def play():
             video = video_files[0]
     except:
         print "aqui doy el error ####################"
-        session.rollback()
+        db.session.rollback()
     finally:
-        session.close()
+        db.session.close()
     return render_template('repro_video.html', video = vide + video)
  
 
