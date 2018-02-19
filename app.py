@@ -11,7 +11,7 @@ from werkzeug import secure_filename
 
 from lib.upload_file import uploadfile
 
-from model import Video_lista, db
+from model import Video_lista, db, Url
 
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
@@ -44,6 +44,15 @@ def handle_connection():
     print("Someone is here!")
     video_files = Video_lista.query.get(1)
     emit("lista", json.dumps(video_files.lista))
+
+@socketio.on("url_change")
+def handle_url(url):
+    url_guardar = Url.query.get(1)
+    url_guardar.url = url['url']
+    url_guardar.nom_video = url['nom_video']
+    db.session.merge(url_guardar)
+    db.session.commit()
+    db.session.close()
 
 
 def allowed_file(filename):
@@ -181,14 +190,13 @@ def lista_videos():
 
 @app.route('/play', methods=['GET'])
 def play():
-    video_files = ''
-    for f in os.listdir(video_dir):
-	if f.endswith('mp4'):
-	    video_files += f+','
-	    video = vide + f
-	#else:
-	#    return render_template('selecciona.html', ruta = '/')
-    print 'hola soy video files ',video_files
+    url_enviar = Url.query.get(1)
+    if url_enviar.url == 'http://192.168.100.21/play':
+        video = url_enviar.nom_video
+    else:
+        video = url_enviar.nom_video
+    db.session.commit()
+    db.session.close()
     return render_template('repro_video.html', video = video)
  
 
