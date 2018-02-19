@@ -34,3 +34,8 @@
 	</div>
 </form>
 {% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/cargar.js') }}"></script>
+{% endblock %}
