@@ -64,10 +64,8 @@ def handle_url(url, nom_video):
             db.session.commit()
             db.session.close()
     else:
-        url_guardar.url = url
-        url_guardar.nom_video = nom_video
-        url_guardar.ip = ip
-        db.session.merge(url_guardar)
+        url_guardar = Url(url = url, nom_video = nom_video, ip = ip)
+        db.session.add(url_guardar)
         db.session.commit()
         db.session.close()
 
@@ -229,9 +227,6 @@ def cargar_db():
         db.session.close()
         ip = saber_ip()
         url_guardar = Url.query.filter_by(ip=ip).first()
-        print "###### soy ", url_guardar
-        if url_guardar:
-            print "########## entre pese a ser nonetype"
         if url_guardar:
             if url_guardar.ip == ip:     
                 url_guardar.url = 'http://192.168.100.21/play'
@@ -241,9 +236,7 @@ def cargar_db():
                 db.session.commit()
                 db.session.close()
         else:
-            url_guardar.url = 'http://192.168.100.21/play'
-            url_guardar.nom_video = lista[0]
-            url_guardar.ip = ip
+            url_guardar = Url(url = 'http://192.168.100.21/play', nom_video = lista[0], ip = ip)
             db.session.add(url_guardar)
             db.session.commit()
             db.session.close()
