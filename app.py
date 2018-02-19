@@ -223,6 +223,7 @@ def cargar_db():
         db.session.commit()
         db.session.close()
         ip = saber_ip()
+        print "######################## soy ip ", ip
         url_guardar = Url.query.filter_by(ip=ip).first()
         if url_guardar.ip == ip:     
             url_guardar.url = 'http://192.168.100.21/play'
