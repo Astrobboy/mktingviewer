@@ -54,26 +54,21 @@ def handle_connection():
 @socketio.on("url_change")
 def handle_url(url, nom_video):
     ip = saber_ip()
-    print "@@@@@@@@@@@@@@@@@@@@@@@@@@ sigo"
     url_guardar = Url.query.filter_by(ip=ip).first()
-    print "@@@@@@@@@@@@@@@@@@@@@@@@@@ sigo 2"
-    try:
-        if url_guardar:
-            if url_guardar.ip == ip:
-                url_guardar.url = url
-                url_guardar.nom_video = nom_video
-                url_guardar.ip = ip
-                db.session.merge(url_guardar)
-                db.session.commit()
-                db.session.close()
-        else:
-            url_guardar = Url(url = url, nom_video = nom_video, ip = ip)
-            db.session.add(url_guardar)
+    if url_guardar:
+        if url_guardar.ip == ip:
+            url_guardar.url = url
+            url_guardar.nom_video = nom_video
+            url_guardar.ip = ip
+            db.session.merge(url_guardar)
             db.session.commit()
             db.session.close()
-    except:
-        print "aqui doy el error ####################"
-        db.session.rollback()
+    else:
+        url_guardar = Url(url = url, nom_video = nom_video, ip = ip)
+        db.session.add(url_guardar)
+        db.session.commit()
+        db.session.close()
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -198,21 +193,14 @@ def cargar_lista():
 @app.route('/play', methods=['GET'])
 def play():
     ip = saber_ip()
-    print "@@@@@@@@@@@@@@@@@@@@@@@@@@ sigo"
     url_enviar = Url.query.filter_by(ip=ip).first()
-    print "@@@@@@@@@@@@@@@@@@@@@@@@@@ sigo 2"
-    try:
-        if url_enviar: 
-            print "#########@@@@@@@@@@@@@@@ sigo 3"
-            video = url_enviar.nom_video
-        else:
-            video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
-            video = video_files[0]
-    except:
-        print "aqui doy el error ####################"
-        db.session.rollback()
-    finally:
-        db.session.close()
+    if url_enviar: 
+        video = url_enviar.nom_video
+    else:
+        video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+        video = video_files[0]
+    db.session.commit()
+    db.session.close()
     return render_template('repro_video.html', video = vide + video)
  
 
