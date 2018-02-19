@@ -16,22 +16,10 @@ var video = document.getElementById("demo");
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 
-
-
-function enviar_url_nomVideo(){
-	cont = Math.trunc(localStorage.getItem('cont'));
-	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));
-	socket.emit("url_change", window.location.href, nom_videos[cont]);
-}
-
-
 function verifica(){
 	tiempo_actual = localStorage.getItem(clave_tiempo_actual);
 	localStorage.setItem(clave_duracion_video ,video.duration);
-	console.log("soy tiempo actual "+tiempo_actual);
-	if (tiempo_actual == 0){
-
-	}else{
+	if (tiempo_actual != 0){
 		video.currentTime = tiempo_actual;
 		localStorage.setItem(clave_tiempo_actual, '0');
 	}
@@ -46,8 +34,6 @@ function duracion(){
 	}
 	localStorage.setItem(clave_tiempo_actual, tiempo_actual);
 	localStorage.setItem(url_clave, url_location);
-    //
-    enviar_url_nomVideo();
 }
 
 window.onbeforeunload = function (event) {
@@ -58,8 +44,7 @@ window.onbeforeunload = function (event) {
 
 socket.on("lista", (data) => {
 	localStorage.setItem(clave_lista_videos, JSON.parse(data));
-	console.log("recibi los datos");
-	enviar_url_nomVideo();	
+	console.log("recibi los datos");	
 });
 
 

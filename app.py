@@ -11,7 +11,7 @@ from werkzeug import secure_filename
 
 from lib.upload_file import uploadfile
 
-from model import Video_lista, db, Url
+from model import Video_lista, db
 
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
@@ -52,25 +52,6 @@ def handle_connection():
     emit("lista", json.dumps(video_files.lista))
     db.session.commit()
     db.session.close()
-
-@socketio.on("url_change")
-def handle_url(url, nom_video):
-    ip = saber_ip()
-    url_guardar = Url.query.filter_by(ip=ip).first()
-    if url_guardar:
-        if url_guardar.ip == ip:
-            url_guardar.url = url
-            url_guardar.nom_video = nom_video
-            url_guardar.ip = ip
-            db.session.merge(url_guardar)
-            db.session.commit()
-            db.session.close()
-    else:
-        url_guardar = Url(url = url, nom_video = nom_video, ip = ip)
-        db.session.add(url_guardar)
-        db.session.commit()
-        db.session.close()
-
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -194,10 +175,9 @@ def cargar_lista():
 
 @app.route('/play', methods=['GET'])
 def play():
-    ip = saber_ip()
-    url_enviar = Url.query.filter_by(ip=ip).first()
-    if url_enviar: 
-        video = url_enviar.nom_video
+    lista_video = Video_lista.query.get(1)
+    if lista_video: 
+        video = json.loads(var.lista)[0]
     else:
         video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
         video = video_files[0]
@@ -227,21 +207,6 @@ def cargar_db():
         db.session.merge(list_videos)
         db.session.commit()
         db.session.close()
-        ip = saber_ip()
-        url_guardar = Url.query.filter_by(ip=ip).first()
-        if url_guardar:
-            if url_guardar.ip == ip:     
-                url_guardar.url = 'http://192.168.100.21/play'
-                url_guardar.nom_video = lista[0]
-                url_guardar.ip = ip
-                db.session.merge(url_guardar)
-                db.session.commit()
-                db.session.close()
-        else:
-            url_guardar = Url(url = 'http://192.168.100.21/play', nom_video = lista[0], ip = ip)
-            db.session.add(url_guardar)
-            db.session.commit()
-            db.session.close()
     return render_template('biblioteca.html')
 
 
