@@ -54,7 +54,7 @@ def handle_connection():
 @socketio.on("url_change")
 def handle_url(url, nom_video):
     ip = saber_ip()
-    url_guardar = Url.query.get(ip=ip)
+    url_guardar = Url.query.filter_by(ip=ip).first()
     if url.ip == ip:
         url_guardar.url = url
         url_guardar.nom_video = nom_video
@@ -193,7 +193,8 @@ def cargar_lista():
 
 @app.route('/play', methods=['GET'])
 def play():
-    url_enviar = Url.query.get(1)
+    ip = saber_ip()
+    url_enviar = Url.query.filter_by(ip=ip).first()
     video = url_enviar.nom_video
     db.session.commit()
     db.session.close()
@@ -222,7 +223,7 @@ def cargar_db():
         db.session.commit()
         db.session.close()
         ip = saber_ip()
-        url_guardar = Url.query.get(ip=ip)
+        url_guardar = Url.query.filter_by(ip=ip).first()
         if url_guardar.ip == ip:     
             url_guardar.url = 'http://192.168.100.21/play'
             url_guardar.nom_video = lista[0]
