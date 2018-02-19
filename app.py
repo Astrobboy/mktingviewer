@@ -5,6 +5,7 @@ import json
 
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory, g
 from flask_socketio import SocketIO,send, emit
+from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from werkzeug import secure_filename
 
