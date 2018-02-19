@@ -55,13 +55,14 @@ def handle_connection():
 def handle_url(url, nom_video):
     ip = saber_ip()
     url_guardar = Url.query.filter_by(ip=ip).first()
-    if url.ip == ip:
-        url_guardar.url = url
-        url_guardar.nom_video = nom_video
-        url_guardar.ip = ip
-        db.session.merge(url_guardar)
-        db.session.commit()
-        db.session.close()
+    if url_guardar:
+        if url.ip == ip:
+            url_guardar.url = url
+            url_guardar.nom_video = nom_video
+            url_guardar.ip = ip
+            db.session.merge(url_guardar)
+            db.session.commit()
+            db.session.close()
     else:
         url_guardar.url = url
         url_guardar.nom_video = nom_video
@@ -195,7 +196,11 @@ def cargar_lista():
 def play():
     ip = saber_ip()
     url_enviar = Url.query.filter_by(ip=ip).first()
-    video = url_enviar.nom_video
+    if url_enviar: 
+        video = url_enviar.nom_video
+    else:
+        video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+        video = video_files[0]
     db.session.commit()
     db.session.close()
     return render_template('repro_video.html', video = vide + video)
@@ -224,13 +229,14 @@ def cargar_db():
         db.session.close()
         ip = saber_ip()
         url_guardar = Url.query.filter_by(ip=ip).first()
-        if url_guardar.ip == ip:     
-            url_guardar.url = 'http://192.168.100.21/play'
-            url_guardar.nom_video = lista[0]
-            url_guardar.ip = ip
-            db.session.merge(url_guardar)
-            db.session.commit()
-            db.session.close()
+        if url_guardar:
+            if url_guardar.ip == ip:     
+                url_guardar.url = 'http://192.168.100.21/play'
+                url_guardar.nom_video = lista[0]
+                url_guardar.ip = ip
+                db.session.merge(url_guardar)
+                db.session.commit()
+                db.session.close()
         else:
             url_guardar.url = 'http://192.168.100.21/play'
             url_guardar.nom_video = lista[0]
