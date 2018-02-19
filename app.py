@@ -206,7 +206,7 @@ def selecciona():
 def cargar_db():
     if request.method == 'POST':
         lista = request.form.getlist('select_video')
-        list_videos = User_lista.query.get(1)
+        list_videos = Video_lista.query.get(1)
         list_videos.lista = json.dumps(lista)
         db.session.merge(list_videos)
         db.session.commit()
