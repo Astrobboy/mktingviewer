@@ -45,7 +45,6 @@ function duracion(){
     cont = Math.trunc(localStorage.getItem('cont'));
     nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));
     var nom_video = nom_videos[cont];
-    localStorage.setItem('soy lo que guardo', nom_videos[cont]);
     dic_video = {'url':window.location.href, 'nom_video':nom_video} 
     socket.emit("url_change",dic_video);
 }

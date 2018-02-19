@@ -53,6 +53,8 @@ def handle_url(url):
     db.session.merge(url_guardar)
     db.session.commit()
     db.session.close()
+    print "llegue aqui ######################"
+    print url
 
 
 def allowed_file(filename):
@@ -181,10 +183,6 @@ def cargar_lista():
 def play():
     url_enviar = Url.query.get(1)
     video = url_enviar.nom_video
-    print "##########"
-    print url_enviar.nom_video
-    print url_enviar.url
-    print "##########"
     db.session.commit()
     db.session.close()
     return render_template('repro_video.html', video = vide + video)
