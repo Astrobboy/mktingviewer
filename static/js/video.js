@@ -62,7 +62,6 @@ socket.on("lista", (data) => {
 });
 */
 
-prueba()
 
 video.addEventListener("ended", function() {
 	prueba()
