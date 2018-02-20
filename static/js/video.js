@@ -67,7 +67,6 @@ socket.on("lista", (data) => {
 setInterval('obtener_json()',1000);
 
 video.addEventListener("ended", function() {
-	prueba()
 	localStorage.setItem(clave_tiempo_actual, '0');
 	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));	
 	if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
