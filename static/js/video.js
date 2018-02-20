@@ -47,7 +47,7 @@ function prueba(){
 	xhr.onreadystatechange = function() {
 	    if(xhr.readyState == 4 && xhr.status == 200){
 	    	localStorage.setItem(clave_lista_videos, xhr.responseText);
-	        console.log(xhr.responseText);
+	    	localStorage.setItem(clave_cont, '0')
 	    }
 	}
 }
@@ -61,10 +61,11 @@ socket.on("lista", (data) => {
 	reconnection: false;
 });
 */
+
 prueba()
 
-
 video.addEventListener("ended", function() {
+	prueba()
 	localStorage.setItem(clave_tiempo_actual, '0');
 	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));	
 	if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
