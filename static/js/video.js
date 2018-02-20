@@ -41,7 +41,7 @@ window.onbeforeunload = function (event) {
 }
 
 function obtener_json(){
-	if (video.currentTime == (video.duration - 5)){
+	if (video.currentTime >= (video.duration - 10)){
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET","http://192.168.100.21/doy_json");
 		xhr.send();
