@@ -75,19 +75,16 @@ video.addEventListener("ended", function() {
 			cont = Math.trunc(localStorage.getItem('cont'));
 			if(cont == (nom_videos.length)-1){
 				cont = 0;
-				console.log("soy cont 1 ",cont);
 				localStorage.setItem(clave_cont, cont);
 				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
 			}else{
 				cont += 1;
-				console.log("soy cont 2 ",cont);
 				localStorage.setItem(clave_cont, cont);
 				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);	
 			}
 		}else{	
 				localStorage.setItem(clave_cont, cont);
 				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
-				console.log("soy cont 3 ",cont);
 		}
 
 		localStorage.setItem(clave_cont, cont);
