@@ -40,16 +40,19 @@ window.onbeforeunload = function (event) {
 		duracion();
 }
 
-function prueba(){
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET","http://192.168.100.21/doy_json");
-	xhr.send();
-	xhr.onreadystatechange = function() {
-	    if(xhr.readyState == 4 && xhr.status == 200){
-	    	localStorage.setItem(clave_lista_videos, xhr.responseText);
-	    	localStorage.setItem(clave_cont, '0')
-	    }
-	}
+function obtener_json(){
+	if (video.currentTime == (video.duration - 5)){
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET","http://192.168.100.21/doy_json");
+		xhr.send();
+		xhr.onreadystatechange = function() {
+			if(xhr.readyState == 4 && xhr.status == 200){
+				localStorage.setItem(clave_lista_videos, xhr.responseText);
+				localStorage.setItem(clave_cont, '0')
+			}
+		}
+		
+	}	
 }
 
 
@@ -61,7 +64,7 @@ socket.on("lista", (data) => {
 	reconnection: false;
 });
 */
-
+setInterval('obtener_json()',1000);
 
 video.addEventListener("ended", function() {
 	prueba()
