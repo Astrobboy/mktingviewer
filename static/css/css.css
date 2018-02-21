@@ -1,0 +1,85 @@
+/* CSS Document */
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,900');
+
+div.info{
+    width: 35%;
+    float: left;
+}
+div.fotos{
+    width: 60%;
+    float: right;
+    padding-left: 20px;
+   
+}
+
+body{
+    /* padding: 20px; */
+    font-family: 'Montserrat', sans-serif;
+    overflow-y: hidden;
+}
+    h1,h2,h3,h4,h5,h6 {
+      
+        font-weight: 900;
+        font-size:2em;
+        color:#454545;
+    }
+div.linha{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    border-bottom: 1px solid #ccc;
+}
+h1.titulo{
+    font-size: 2.3em;
+    color:forestgreen;
+}
+p.preco{
+    font-weight: 900;
+    color:forestgreen;
+    font-size: 2em;
+    
+    
+}
+p.preco_ou{
+    font-weight: 900;
+    font-size: 1em;
+    color:#ccc;
+  
+}
+#descricao{
+    margin-bottom: 10px;
+    line-height: 19px;
+    text-align: justify;
+    text-justify: inter-word;
+    overflow: hidden;
+    position: relative;
+}
+
+div.foto_ativa{
+    
+    background: no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+    width: 90%;
+    height: 720px;
+    
+}
+.foto-rotativo{
+    display: none;
+    position: relative;
+}
+
+div.fotinha{
+    background: no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+   width: 100px;
+    height: 100px;
+    float: left;
+    opacity: 0.5;
+    
+    
+}

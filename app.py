@@ -8,6 +8,7 @@ from flask_socketio import SocketIO,send, emit
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from werkzeug import secure_filename
+from flask_pymongo import PyMongo
 
 from lib.upload_file import uploadfile
 
@@ -20,7 +21,7 @@ vide = '../data/'
 
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
-
+mongo = PyMongo(app)
 
 ALLOWED_EXTENSIONS = set(['mp4', 'png'])
 IGNORED_FILES = set(['.gitignore'])
@@ -210,6 +211,16 @@ def doy_json():
     db.session.commit()
     db.session.close()
     return lista_video.lista
+
+@app.route('/producto/<id>',methods=['GET'])
+def index(id):
+    producto = mongo.db.producto.find_one_or_404({'codigo': id})
+    return render_template('index.html',
+                            title = producto['title'],
+                            link = producto['link_images'],
+                            code = producto['codigo'] )
+
+
 
 
 if __name__ == '__main__':
