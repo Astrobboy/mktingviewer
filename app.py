@@ -2,6 +2,7 @@ import os
 import simplejson
 import traceback
 import json
+import subprocess
 
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory, g
 from flask_socketio import SocketIO,send, emit
@@ -218,7 +219,7 @@ def index(id):
     ruta = '../static/img/productos/'
     link_images_static = []
     for link in producto['link_images']:
-        os.system("bash checkfile.sh ", link)
+        os.system("/bin/checkfile " + link)
         link_images_static.append(ruta + link.split("/")[-1])
     return render_template('index.html',
                             title = producto['title'],
