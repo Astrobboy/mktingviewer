@@ -24,6 +24,8 @@ nosetests.xml
 
 logfile.log
 
+static/img/productos/
+
 flask
 venv/
 *.db
