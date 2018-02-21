@@ -215,9 +215,14 @@ def doy_json():
 @app.route('/producto/<id>',methods=['GET'])
 def index(id):
     producto = mongo.db.producto.find_one_or_404({'codigo': id})
+    ruta = '../static/img/productos/'
+    link_images_static = []
+    for link in producto['link_images']:
+        os.system("bash checkfile.sh ", link)
+        link_images_static.append(ruta + link.split("/")[-1])
     return render_template('index.html',
                             title = producto['title'],
-                            link = producto['link_images'],
+                            link = link_images_static,
                             code = producto['codigo'] )
 
 
