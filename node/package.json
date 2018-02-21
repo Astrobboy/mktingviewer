@@ -1,0 +1,14 @@
+{
+  "name": "script-mongo",
+  "version": "1.0.0",
+  "description": "es el script que actualiza la base de datos de mongo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "astro",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^0.18.0"
+  }
+}
