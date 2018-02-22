@@ -48,7 +48,8 @@ function obtener_json(){
 		xhr.onreadystatechange = function() {
 			if(xhr.readyState == 4 && xhr.status == 200){
 				console.log(xhr.responseText);
-				var nuevo_array = xhr.responseText;
+				var nuevo_array = xhr.responseText.map(function(x) {return x});
+				console.log(typeof(nuevo_array));
 				var actual_array = localStorage.getItem(clave_lista_videos);
 				//ordeno las listas
 				nuevo_array.sort();
