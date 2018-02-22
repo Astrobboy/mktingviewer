@@ -53,12 +53,14 @@ function obtener_json(){
 				nuevo_array.sort();
 				actual_array.sort();
 				//compara si son iguales los array y devuelve verdadero si es cierto
+				console.log(nuevo_array.length==actual_array.length && nuevo_array.every(function(v,i) { return v === actual_array[i] } ));
 				if(nuevo_array.length==actual_array.length && nuevo_array.every(function(v,i) { return v === actual_array[i] } )){
 					//si es cierto no hace nada
 					//console.log("no hubo cambios");
+					localStorage.setItem(clave_lista_videos, xhr.responseText);
 				}else{	
 					//si hubo cambios guarda la lista y contador vuelve a cero
-					//console.log("si hubo cambios");
+					console.log("si hubo cambios");
 					localStorage.setItem(clave_lista_videos, xhr.responseText);
 					localStorage.setItem(clave_cont, '0')
 				}
