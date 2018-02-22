@@ -209,8 +209,6 @@ def cargar_db():
 @app.route('/doy_json', methods=['GET'])
 def doy_json():
     lista_video = Video_lista.query.get(1)
-    db.session.commit()
-    db.session.close()
     return lista_video.lista
 
 @app.route('/producto/<id>',methods=['GET'])
