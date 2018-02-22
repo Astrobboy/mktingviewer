@@ -48,7 +48,6 @@ function obtener_json(){
 		xhr.onreadystatechange = function() {
 			if(xhr.readyState == 4 && xhr.status == 200){
 				console.log(typeof(JSON.parse(xhr.responseText)));
-				var nuevo_array = JSON.parse(xhr.responseText);
 				var actual_array = JSON.parse(localStorage.getItem(clave_lista_videos));
 				//ordeno las listas
 				nuevo_array.sort();
@@ -59,7 +58,7 @@ function obtener_json(){
 					//console.log("no hubo cambios");
 				}else{	
 					//si hubo cambios guarda la lista y contador vuelve a cero
-					//console.log("si hubo cambios");
+					console.log("si hubo cambios");
 					localStorage.setItem(clave_lista_videos, xhr.responseText);
 					localStorage.setItem(clave_cont, '0')
 				}
