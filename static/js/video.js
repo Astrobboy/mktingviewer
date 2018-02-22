@@ -47,19 +47,23 @@ function obtener_json(){
 		xhr.send();
 		xhr.onreadystatechange = function() {
 			if(xhr.readyState == 4 && xhr.status == 200){
-				var nuevo_array = JSON.parse(xhr.responseText);
-				var actual_array = JSON.parse(localStorage.getItem(clave_lista_videos));
-				//ordeno las listas
-				nuevo_array.sort();
-				actual_array.sort();
-				if(nuevo_array.length==actual_array.length && nuevo_array.every(function(v,i) { return v === actual_array[i] } )){
-					//si es cierto no hace nada
-					console.log("no hubo cambios");
-				}else{	
-					//si hubo cambios guarda la lista y contador vuelve a cero
-					console.log("si hubo cambios");
+				if (localStorage.getItem(clave_lista_videos)){
+					var nuevo_array = JSON.parse(xhr.responseText);
+					var actual_array = JSON.parse(localStorage.getItem(clave_lista_videos));
+					//ordeno las listas
+					nuevo_array.sort();
+					actual_array.sort();
+					if(nuevo_array.length==actual_array.length && nuevo_array.every(function(v,i) { return v === actual_array[i] } )){
+						//si es cierto no hace nada
+						console.log("no hubo cambios");
+					}else{	
+						//si hubo cambios guarda la lista y contador vuelve a cero
+						console.log("si hubo cambios");
+						localStorage.setItem(clave_lista_videos, xhr.responseText);
+						localStorage.setItem(clave_cont, '0')
+					}
+				}else{
 					localStorage.setItem(clave_lista_videos, xhr.responseText);
-					localStorage.setItem(clave_cont, '0')
 				}
 			}
 		}
