@@ -100,7 +100,7 @@ video.addEventListener("ended", function() {
 		location.replace("http://192.168.100.21/play");
 	}*/
 	
-	if (window.location == 'http://192.168.100.21/play'){
+	
 		//valida si existe una lista, si no vuelve a play
 		if (localStorage.getItem(clave_lista_videos)){
 			//valida si hay un contador, si no guarda el contador = 0 y comienza el video en 0
@@ -127,7 +127,7 @@ video.addEventListener("ended", function() {
 			localStorage.setItem(clave_cont, cont);
 			location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
 		}
-	}
+	
 });
 
 
