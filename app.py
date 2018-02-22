@@ -48,6 +48,10 @@ def handle_connection():
     db.session.commit()
     db.session.close()
 """
+def video_default():
+    video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+    return video_files[0]
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -171,14 +175,19 @@ def cargar_lista():
 
 @app.route('/play', methods=['GET'])
 def play():
-    lista_video = Video_lista.query.get(1)
+    lista_video = mongo.db.video.count({'_id': '1'})
     if lista_video: 
-        video = json.loads(lista_video.lista)[0]
+        #obtengo la columna 1
+        list_videos = mongo.db.video.find_one_or_404({'_id': '1'})
+        #obtengo el primer elemento
+        video = list_videos["lista"][0]
     else:
-        video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
-        video = video_files[0]
-    db.session.commit()
-    db.session.close()
+        # si no existe crea la lista con un video_default
+        video_d = video_default()
+        mongo.db.video.insert_one({"_id":"1"})
+        #agrega el video_default
+        mongo.db.video.replace_one({"_id":"1"}, {"lista": video_d})
+        video = video_d
     return render_template('repro_video.html', video = vide + video)
  
 
@@ -197,17 +206,30 @@ def selecciona():
 @app.route('/cargar_db',methods=['GET', 'POST'])
 def cargar_db():
     if request.method == 'POST':
-        lista = request.form.getlist('select_video')
-        #obtengo datos de db, y cambio lista
-        list_videos = mongo.db.video.replace_one({'id': '1'}, {'lista': lista})
+        #compruebo y creo collection video
+        if (mongo.db.video.find({})):
+            #consulto si existe 0 = false, 1 = true
+            if(mongo.db.video.count({'_id': '1'})):
+                #si existe cambia la lista
+                lista = request.form.getlist('select_video')
+                #obtengo datos de db, y cambio lista
+                mongo.db.video.replace_one({"_id":"1"}, {"lista":lista})
+            else:
+                # si no existe crea la lista
+                mongo.db.video.insert_one({"_id":"1"})
+                video_d = video_default()
+                mongo.db.video.replace_one({"_id":"1"}, {"lista":video_d})
+        else:
+            mongo.db.create_collection("video")
     return redirect(url_for('cargar_lista'))
 
 
 @app.route('/doy_json', methods=['GET'])
 def doy_json():
-    #obtiene lista y manda
-    lista_video = mongo.db.producto.find_one_or_404({'id': '1'})
-    return lista_video["lista"]
+    #obtengo la lista actualizada
+    list_videos = mongo.db.video.find_one_or_404({'_id': '1'})
+    #retorno la lista actualizada
+    return json.dumps(list_videos["lista"])
 
 @app.route('/producto/<id>',methods=['GET'])
 def index(id):
