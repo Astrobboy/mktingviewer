@@ -11,9 +11,7 @@ var url_location = window.location;
 var url_clave = 'url';
 
 var video = document.getElementById("demo");
-if(window.location == 'http://192.168.100.21/play'){
-	localStorage.clear();
-}
+
 
 //var socket = io.connect('http://' + document.domain + ':' + location.port);
 
@@ -80,6 +78,13 @@ socket.on("lista", (data) => {
 */
 setInterval('obtener_json()',1000);
 
+//si es igual a play limpia el localStorage
+if(window.location == 'http://192.168.100.21/play'){
+	localStorage.clear();
+}
+
+
+
 //funcion que esta a la escucha de cuando termine el video
 video.addEventListener("ended", function() {
 	//devuelve el tiempo actual a cero
@@ -90,34 +95,35 @@ video.addEventListener("ended", function() {
 	/*if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
 		location.replace("http://192.168.100.21/play");
 	}*/
-	//valida si existe una lista, si no vuelve a play
-	if (localStorage.getItem(clave_lista_videos)){
-		//valida si hay un contador, si no guarda el contador = 0 y comienza el video en 0
-		if(localStorage.getItem(clave_cont)){
-			//si existe trae el contador
-			cont = Math.trunc(localStorage.getItem('cont'));
-			//pregunta si el contador es igual a la longitud de la lista
-			if(cont == (nom_videos.length)-1){
-				//si es devuelve a 0 cont y vuelve a empezar de 0
-				cont = 0;
-				localStorage.setItem(clave_cont, cont);
-				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
-			}else{
-				//si es falso le suma uno hasta que llegue a ser igual a la longitud de la lista
-				cont += 1;
-				localStorage.setItem(clave_cont, cont);
-				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);	
+	
+	if (window.location == 'http://192.168.100.21/play'){
+		//valida si existe una lista, si no vuelve a play
+		if (localStorage.getItem(clave_lista_videos)){
+			//valida si hay un contador, si no guarda el contador = 0 y comienza el video en 0
+			if(localStorage.getItem(clave_cont)){
+				//si existe trae el contador
+				cont = Math.trunc(localStorage.getItem('cont'));
+				//pregunta si el contador es igual a la longitud de la lista
+				if(cont == (nom_videos.length)-1){
+					//si es devuelve a 0 cont y vuelve a empezar de 0
+					cont = 0;
+					localStorage.setItem(clave_cont, cont);
+					location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
+				}else{
+					//si es falso le suma uno hasta que llegue a ser igual a la longitud de la lista
+					cont += 1;
+					localStorage.setItem(clave_cont, cont);
+					location.replace("http://192.168.100.21/video/"+nom_videos[cont]);	
+				}
+			}else{	
+					localStorage.setItem(clave_cont, '0');
+					location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
 			}
-		}else{	
-				localStorage.setItem(clave_cont, '0');
-				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
-		}
 
-		localStorage.setItem(clave_cont, cont);
-		location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
-	}else {
-		location.replace("http://192.168.100.21/play");
-	};
+			localStorage.setItem(clave_cont, cont);
+			location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
+		}
+	}
 });
 
 
