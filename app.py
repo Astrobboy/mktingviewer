@@ -203,7 +203,7 @@ def cargar_db():
         db.session.merge(list_videos)
         db.session.commit()
         db.session.close()
-    return render_template('biblioteca.html')
+    return redirect(url_for('cargar_lista'))
 
 
 @app.route('/doy_json', methods=['GET'])
