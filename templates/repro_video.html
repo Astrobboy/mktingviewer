@@ -9,7 +9,7 @@
 </head>
 <body onLoad="setInterval('verifica()',1000);">
 	
-	<video id="demo" src="{{ video }}" type="video/mp4" controls autoplay></video>
+	<video id="demo" src="{{ video }}" type="video/mp4" controls autoplay muted></video>
 	
 	<script type="text/javascript" src="{{ url_for('static', filename='js/video.js') }}"></script>
 <!-- onload="verifica()" <label id="lista_videos" style="display:none;">{{ nom_videos }} </label> -->
