@@ -47,8 +47,20 @@ function obtener_json(){
 		xhr.send();
 		xhr.onreadystatechange = function() {
 			if(xhr.readyState == 4 && xhr.status == 200){
-				localStorage.setItem(clave_lista_videos, xhr.responseText);
-				localStorage.setItem(clave_cont, '0')
+				var nuevo_array = xhr.responseText;
+				var actual_array = localStorage.getItem(clave_lista_videos);
+				//ordeno las listas
+				nuevo_array.sort();
+				actual_array.sort();
+				//compara si son iguales los array y devuelve verdadero si es cierto
+				if(nuevo_array.length==actual_array.length && nuevo_array.every(function(v,i) { return v === actual_array[i] } )){
+					//si es cierto no hace nada
+					console.log("no hubo cambios");
+				}else{	
+					//si hubo cambios guarda la lista y contador vuelve a cero
+					localStorage.setItem(clave_lista_videos, xhr.responseText);
+					localStorage.setItem(clave_cont, '0')
+				}
 			}
 		}
 		
@@ -66,26 +78,36 @@ socket.on("lista", (data) => {
 */
 setInterval('obtener_json()',1000);
 
+//funcion que esta a la escucha de cuando termine el video
 video.addEventListener("ended", function() {
+	//devuelve el tiempo actual a cero
 	localStorage.setItem(clave_tiempo_actual, '0');
-	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));	
-	if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
+	//obtiene la lista
+	nom_videos = JSON.parse((localStorage.getItem(clave_lista_videos)));
+
+	/*if(Math.trunc(localStorage.getItem(clave_tiempo_actual)) != Math.trunc(localStorage.getItem(clave_duracion_video))){
 		location.replace("http://192.168.100.21/play");
-	}
+	}*/
+	//valida si existe una lista, si no vuelve a play
 	if (localStorage.getItem(clave_lista_videos)){
+		//valida si hay un contador, si no guarda el contador = 0 y comienza el video en 0
 		if(localStorage.getItem(clave_cont)){
+			//si existe trae el contador
 			cont = Math.trunc(localStorage.getItem('cont'));
+			//pregunta si el contador es igual a la longitud de la lista
 			if(cont == (nom_videos.length)-1){
+				//si es devuelve a 0 cont y vuelve a empezar de 0
 				cont = 0;
 				localStorage.setItem(clave_cont, cont);
 				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
 			}else{
+				//si es falso le suma uno hasta que llegue a ser igual a la longitud de la lista
 				cont += 1;
 				localStorage.setItem(clave_cont, cont);
 				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);	
 			}
 		}else{	
-				localStorage.setItem(clave_cont, cont);
+				localStorage.setItem(clave_cont, '0');
 				location.replace("http://192.168.100.21/video/"+nom_videos[cont]);
 		}
 
