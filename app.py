@@ -198,18 +198,16 @@ def selecciona():
 def cargar_db():
     if request.method == 'POST':
         lista = request.form.getlist('select_video')
-        list_videos = Video_lista.query.get(1)
-        list_videos.lista = json.dumps(lista)
-        db.session.merge(list_videos)
-        db.session.commit()
-        db.session.close()
+        #obtengo datos de db, y cambio lista
+        list_videos = mongo.db.video.replace_one({'id': '1'}, {'lista': lista})
     return redirect(url_for('cargar_lista'))
 
 
 @app.route('/doy_json', methods=['GET'])
 def doy_json():
-    lista_video = Video_lista.query.get(1)
-    return lista_video.lista
+    #obtiene lista y manda
+    lista_video = mongo.db.producto.find_one_or_404({'id': '1'})
+    return lista_video["lista"]
 
 @app.route('/producto/<id>',methods=['GET'])
 def index(id):
