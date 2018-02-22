@@ -11,7 +11,9 @@ var url_location = window.location;
 var url_clave = 'url';
 
 var video = document.getElementById("demo");
-
+if(window.location == 'http://192.168.100.21/play'){
+	localStorage.clear();
+}
 
 //var socket = io.connect('http://' + document.domain + ':' + location.port);
 
