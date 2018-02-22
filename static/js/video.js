@@ -60,6 +60,7 @@ function obtener_json(){
 					//localStorage.setItem(clave_lista_videos, xhr.responseText);
 				}else{	
 					//si hubo cambios guarda la lista y contador vuelve a cero
+					localStorage.clear();
 					console.log("si hubo cambios");
 					localStorage.setItem(clave_lista_videos, xhr.responseText);
 					localStorage.setItem(clave_cont, '0')
