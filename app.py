@@ -13,7 +13,7 @@ from flask_pymongo import PyMongo
 
 from lib.upload_file import uploadfile
 
-from model import Video_lista, db
+import time
 
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
@@ -30,24 +30,38 @@ IGNORED_FILES = set(['.gitignore'])
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 socketio = SocketIO(app)   
-"""
-@socketio.on('message')
-def handle_message(message):
-    g.ul = message
-    print('received message: ' + message)
-
-@socketio.on('json')
-def handle_json(json):
-    send(json, json=True)
 
 
-@socketio.on("connect")
-def handle_connection():
-    video_files = Video_lista.query.get(1)
-    emit("lista", json.dumps(video_files.lista))
-    db.session.commit()
-    db.session.close()
-"""
+def saber_ip():
+    if request.headers.getlist("X-Forwarded-For"):
+        ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        ip = request.remote_addr
+    return ip
+
+
+@socketio.on("datos")
+def handle_connection(json_data):
+    ip = saber_ip()
+    data_video = mongo.db.video.find_one_or_404({'_id': '1'})
+    json_data['ip'] = ip 
+    json_data['creacion'] = data_video['creacion']
+    #compruebo y creo collection video
+    if (mongo.db.Ip.find({})):
+        #consulto si existe 0 = false, 1 = true
+        if(mongo.db.Ip.count({'ip': json_data['ip']})):
+            #si existe, obtengo datos de db y cambia el atributo de la ip
+            mongo.db.Ip.replace_one({'ip': json_data['ip']}, json_data)
+        else:
+            # si no existe almacena la ip
+            mongo.db.Ip.insert_one(json_data)
+    else:
+        #creo collection
+        mongo.db.create_collection("Ip")
+        #almaceno
+        mongo.db.Ip.insert_one(json_data)   
+
+
 def video_default():
     video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
     return video_files[0]
@@ -173,30 +187,65 @@ def cargar_lista():
 	#return renter_template('selecciona.html', ruta='/')
 
 
+
 @app.route('/play', methods=['GET'])
 def play():
-    lista_video = mongo.db.video.count({'_id': '1'})
-    if lista_video: 
-        #obtengo la columna 1
-        list_videos = mongo.db.video.find_one_or_404({'_id': '1'})
-        #obtengo el primer elemento
-        video = list_videos["lista"][0]
-    else:
-        # si no existe crea la lista con un video_default
-        video_d = video_default()
-        mongo.db.video.insert_one({"_id":"1"})
-        #agrega el video_default
-        mongo.db.video.replace_one({"_id":"1"}, {"lista": video_d})
-        video = video_d
-    return render_template('repro_video.html', video = vide + video)
+    time.sleep(0.3)
+    ip = saber_ip()
+    #compruebo y creo collection video
+    if (mongo.db.Ip.find({})):
+        #consulto si existe 0 = false, 1 = true
+        if(mongo.db.Ip.count({'ip': ip })):
+            #traigo datos de tabla Ip y video para comparar sus fechas
+            datos_lista = mongo.db.video.find_one_or_404({'_id': '1'})
+            datos_ip = mongo.db.Ip.find_one_or_404({'ip': ip}) 
+            if(datos_lista['creacion'] == datos_ip['creacion']):
+                #si son iguales mando los datos paso
+                pass
+            else:
+                #actualizo la creacion en la tabla Ip
+                datos_ip['creacion'] = datos_lista['creacion']
+                mongo.db.Ip.replace_one({'ip': ip}, datos_ip)
+            #si la longitud de la lista es igual a cont le devuelve a cero
+            print len(datos_lista['lista'])
+            if(len(datos_lista['lista']) == datos_ip['cont']):
+                datos_ip['cont'] = 0
+                mongo.db.Ip.replace_one({'ip': ip}, datos_ip)
+            #vuelvo a traer los datos de ip
+            datos_ip = mongo.db.Ip.find_one_or_404({'ip': ip})  
+            print datos_ip['cont']
+            #preparo para enviar 
+            tiempo_actual = datos_ip["tiempo"]
+            cont = datos_ip["cont"]
+            video = datos_lista["lista"][cont]
+            return render_template('repro_video.html',
+                                    video = vide + video,
+                                    tiempo = tiempo_actual,
+                                    cont = cont
+                                    )
+        else:
+            datos_lista = mongo.db.video.count({'_id': '1'})
+            if datos_lista: 
+                #obtengo la columna 1, con el fin de obtener la creacion de la lista
+                data_video = mongo.db.video.find_one_or_404({'_id': '1'})
+                #Inserto el primer elemento para esta ip
+                mongo.db.Ip.insert_one({
+                                        "ip": ip,
+                                        "cont": 0,
+                                        "tiempo":  0,
+                                        "creacion": data_video['creacion']
+                                        })
+                nom_video = mongo.db.video.find_one_or_404({'_id': '1'})
+                cont = mongo.db.Ip.find_one_or_404({'ip': ip})
+                video = nom_video['lista'][cont['cont']]
+                return render_template('repro_video.html',
+                                        video = vide + video,
+                                        cont = cont['cont']
+                                        )
+ 
  
 
-@app.route('/video/<nombre>',methods=['GET'])
-def videos_mostrar(nombre):
-    if (nombre):
-    	video = vide + nombre
-    	return render_template('repro_video.html', video = video )
-    return redirect(url_for('/play'))
+
 
 
 @app.route('/selecciona',methods=['GET'])
@@ -206,30 +255,25 @@ def selecciona():
 @app.route('/cargar_db',methods=['GET', 'POST'])
 def cargar_db():
     if request.method == 'POST':
+        time.strftime("%c")
         #compruebo y creo collection video
         if (mongo.db.video.find({})):
             #consulto si existe 0 = false, 1 = true
             if(mongo.db.video.count({'_id': '1'})):
                 #si existe cambia la lista
                 lista = request.form.getlist('select_video')
-                #obtengo datos de db, y cambio lista
-                mongo.db.video.replace_one({"_id":"1"}, {"lista":lista})
+               #obtengo datos de db, y cambio lista
+                mongo.db.video.replace_one({"_id":"1"}, {"lista":lista, "creacion": time.strftime("%c")})
             else:
                 # si no existe crea la lista
-                mongo.db.video.insert_one({"_id":"1"})
-                video_d = video_default()
-                mongo.db.video.replace_one({"_id":"1"}, {"lista":video_d})
+                mongo.db.video.insert_one({"_id":"1"}, {"lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime("%c") })
         else:
             mongo.db.create_collection("video")
+            mongo.db.video.insert_one({"_id":"1"}, {"lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime("%c") })
     return redirect(url_for('cargar_lista'))
 
 
-@app.route('/doy_json', methods=['GET'])
-def doy_json():
-    #obtengo la lista actualizada
-    list_videos = mongo.db.video.find_one_or_404({'_id': '1'})
-    #retorno la lista actualizada
-    return json.dumps(list_videos["lista"])
+
 
 @app.route('/producto/<id>',methods=['GET'])
 def index(id):
