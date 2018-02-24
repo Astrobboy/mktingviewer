@@ -26,15 +26,17 @@ video.addEventListener("ended", function() {
 
 
 function envio_json(cont, tiempo){
-	var socket = io.connect('http://' + document.domain + ':' + location.port);
+	var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']});
 	json_data = {
 			"cont": cont,
 			"tiempo":  tiempo
 			} 
 	socket.emit('datos', json_data); //envio a datos
 	console.log(json_data);
-	//socket.close();
-}
+	//setTimeout(() => {
+	//socket.disconnect();
+	//}, 500);
+}	
 
 
 function duracion(){
