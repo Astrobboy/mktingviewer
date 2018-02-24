@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Pag Login</title>
+	<link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div class="body"></div>
+		<div class="grad"></div>
+		<div class="header">
+			<div>ATACADO<span>GAMES</span></div>
+		</div>
+		<br>
+		<form action="/login" method="post">
+			<div class="login">
+					<input type="text" placeholder="username" name="username"><br>
+					<input type="password" placeholder="password" name="password"><br>
+					<input type="submit" value="Login">
+			</div>
+		</form>
+	
+</body>
+</html>

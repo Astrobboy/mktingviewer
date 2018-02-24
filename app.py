@@ -14,6 +14,7 @@ from flask_pymongo import PyMongo
 from lib.upload_file import uploadfile
 
 import time
+import hashlib
 
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
@@ -178,13 +179,21 @@ def get_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def biblioteca():
-    return render_template('biblioteca.html')
+    data_user_db = mongo.db.usuario.find_one_or_404({'username': 'atacado'})
+    if data_user_db['estado'] == 'True':
+        return render_template('biblioteca.html')
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/cargar_lista', methods=['GET', 'POST'])
 def cargar_lista():
-    video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
-    return render_template('cargar_lista.html', videos=video_files)
-	#return renter_template('selecciona.html', ruta='/')
+    data_user_db = mongo.db.usuario.find_one_or_404({'username': 'atacado'})
+    if data_user_db['estado'] == 'True':
+        video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+        return render_template('cargar_lista.html', videos=video_files)
+    else:
+        return redirect(url_for('login'))
+    #return renter_template('selecciona.html', ruta='/')
 
 
 
@@ -254,20 +263,23 @@ def selecciona():
 
 @app.route('/cargar_db',methods=['GET', 'POST'])
 def cargar_db():
-    if request.method == 'POST':
-        time.strftime("%c")
-        #compruebo y creo collection video
-        if (mongo.db.video.find({})):
-            #consulto si existe 0 = false, 1 = true
-            if(mongo.db.video.count({'_id': '1'})):
-                #si existe cambia la lista
-                lista = request.form.getlist('select_video')
-               #obtengo datos de db, y cambio lista
-                mongo.db.video.replace_one({"_id":"1"}, {"lista":lista, "creacion": time.strftime("%c")})
-            else:
-		# si no existe crea la lista
-                mongo.db.video.insert_one({"_id":"1", "lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime("%c") })
-    return redirect(url_for('cargar_lista'))
+    data_user_db = mongo.db.usuario.find_one_or_404({'username': 'atacado'})
+    if data_user_db['estado'] == 'True':
+        if request.method == 'POST':
+            #compruebo y creo collection video
+            if (mongo.db.video.find({})):
+                #consulto si existe 0 = false, 1 = true
+                if(mongo.db.video.count({'_id': '1'})):
+                    #si existe cambia la lista
+                    lista = request.form.getlist('select_video')
+                   #obtengo datos de db, y cambio lista
+                    mongo.db.video.replace_one({"_id":"1"}, {"lista":lista, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y')})
+                else:
+    		# si no existe crea la lista
+                    mongo.db.video.insert_one({"_id":"1", "lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
+        return redirect(url_for('cargar_lista'))
+    else:
+        return redirect(url_for('/login'))
 
 
 
@@ -285,8 +297,28 @@ def index(id):
                             link = link_images_static,
                             code = producto['codigo'] )
 
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        data_user_db = mongo.db.usuario.find_one_or_404({'username': username})
+        if mongo.db.usuario.count({'username': username}):
+            data_user_db = mongo.db.usuario.find_one_or_404({'username': username})
+            if (data_user_db['password'] == hashlib.new("sha1", password).hexdigest() and data_user_db['username'] == username ):
+                data_user_db["estado"] = "True"
+                mongo.db.usuario.replace_one({"username":username}, {"username": username, "password": data_user_db['password'], "estado": data_user_db["estado"]})
+                return redirect(url_for('biblioteca'))
+        return render_template('login.html')
+    if request.method == 'GET':
+        return render_template('login.html')
 
-
+@app.route('/salir', methods = ['GET'])
+def salir():
+    user = 'atacado'
+    data_user_db = mongo.db.usuario.find_one_or_404({'username': user })
+    mongo.db.usuario.replace_one({"username":user}, {"username": user, "password": hashlib.new("sha1", user).hexdigest(), "estado": "False" })
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0')
