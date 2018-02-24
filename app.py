@@ -265,11 +265,8 @@ def cargar_db():
                #obtengo datos de db, y cambio lista
                 mongo.db.video.replace_one({"_id":"1"}, {"lista":lista, "creacion": time.strftime("%c")})
             else:
-                # si no existe crea la lista
-                mongo.db.video.insert_one({"_id":"1"}, {"lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime("%c") })
-        else:
-            mongo.db.create_collection("video")
-            mongo.db.video.insert_one({"_id":"1"}, {"lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime("%c") })
+		# si no existe crea la lista
+                mongo.db.video.insert_one({"_id":"1", "lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime("%c") })
     return redirect(url_for('cargar_lista'))
 
 
