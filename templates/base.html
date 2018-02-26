@@ -4,18 +4,18 @@
 
 {% block head %}
 {{ super() }}
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<!-- Generic page styles -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Generic page styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-<!-- blueimp Gallery styles -->
-<link rel="stylesheet" href="http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
+    <!-- blueimp Gallery styles -->
+    <link rel="stylesheet" href="http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
 
-<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.fileupload.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.fileupload-ui.css') }}">
+    <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.fileupload.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.fileupload-ui.css') }}">
 
 {% endblock %}
 
@@ -30,17 +30,20 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Cargar Videos</a>
+            <a class="navbar-brand" href="/">Home</a>
         </div>
         <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/cargar_videos">Cargar Videos</a></li>
+            </ul>
             <ul class="nav navbar-nav">
                 <li><a href="/cargar_lista">Ver Lista</a></li>
             </ul>
             <ul class="nav navbar-nav">
-                <li><a href="/">Lista a Mostrar</a></li>
+                <li><a href="/nuevo_usuario">Cargar Usuario</a></li>
             </ul>
             <ul class="nav navbar-nav">
-                <li><a href="/salir">Salir</a></li>
+                <li><a href="/logout">Salir</a></li>
             </ul>
         </div>
     </div>

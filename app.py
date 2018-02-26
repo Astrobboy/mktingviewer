@@ -6,10 +6,11 @@ import subprocess
 
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory, g
 from flask_socketio import SocketIO,send, emit
-from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from werkzeug import secure_filename
 from flask_pymongo import PyMongo
+from flask_wtf import CSRFProtect
+from flask import session
 
 from lib.upload_file import uploadfile
 
@@ -24,11 +25,12 @@ vide = '../data/'
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 mongo = PyMongo(app)
+csrf = CSRFProtect(app)
 
 ALLOWED_EXTENSIONS = set(['mp4', 'png'])
 IGNORED_FILES = set(['.gitignore'])
 
-db = SQLAlchemy(app)
+
 bootstrap = Bootstrap(app)
 socketio = SocketIO(app)   
 
@@ -44,21 +46,25 @@ def saber_ip():
 @socketio.on("datos")
 def handle_connection(json_data):
     ip = saber_ip()
-    data_video = mongo.db.video.find_one_or_404({'_id': '1'})
-    json_data['ip'] = ip 
-    json_data['creacion'] = data_video['creacion']
-    #compruebo y creo collection video
-    if (mongo.db.Ip.find({})):
-        #consulto si existe 0 = false, 1 = true
-        if(mongo.db.Ip.count({'ip': json_data['ip']})):
-            #si existe, obtengo datos de db y cambia el atributo de la ip
-            mongo.db.Ip.replace_one({'ip': json_data['ip']}, json_data)
+    if (mongo.db.Ip.find_one({'ip': ip})):
+        data_video = mongo.db.video.find_one({'_id': '1'})
+        data_ip = mongo.db.Ip.find_one({'ip': ip})
+        #comparo si son iguales los timepos de creacion de las listas
+        if (data_ip['creacion'] == data_video['creacion']):
+            # si es solo almaceno tiempo y cont
+            data_ip['cont'] = json_data['cont']
+            data_ip['tiempo'] = json_data['tiempo']
+            mongo.db.Ip.replace_one({'ip': ip}, data_ip)
         else:
-            # si no existe almacena la ip
-            mongo.db.Ip.insert_one(json_data)
+            # almaceno tiempo y cont en 0 y la nueva  creacion
+            data_ip['creacion'] = data_video['creacion']
+            data_ip['cont'] = 0
+            data_ip['tiempo'] = 0
+            mongo.db.Ip.replace_one({'ip': ip}, data_ip)
     else:
-        #creo collection
-        mongo.db.create_collection("Ip")
+        data_video = mongo.db.video.find_one({'_id': '1'})
+        json_data['ip'] = ip 
+        json_data['creacion'] = data_video['creacion']
         #almaceno
         mongo.db.Ip.insert_one(json_data)   
 
@@ -176,24 +182,24 @@ def get_thumbnail(filename):
 def get_file(filename):
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER']), filename=filename)
 
+@app.route('/')
+def home():
+    return render_template("home.html", title="home")
 
-@app.route('/', methods=['GET', 'POST'])
+
+@app.route('/cargar_videos', methods=['GET', 'POST'])
 def biblioteca():
-    data_user_db = mongo.db.usuario.find_one_or_404({'username': 'atacado'})
-    if data_user_db['estado'] == 'True':
+    if 'username' in session:
         return render_template('biblioteca.html')
-    else:
-        return redirect(url_for('login'))
+    return redirect(url_for('login'))
 
 @app.route('/cargar_lista', methods=['GET', 'POST'])
 def cargar_lista():
-    data_user_db = mongo.db.usuario.find_one_or_404({'username': 'atacado'})
-    if data_user_db['estado'] == 'True':
+    if 'username' in session:
         video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
         return render_template('cargar_lista.html', videos=video_files)
     else:
         return redirect(url_for('login'))
-    #return renter_template('selecciona.html', ruta='/')
 
 
 
@@ -201,61 +207,51 @@ def cargar_lista():
 def play():
     time.sleep(0.3)
     ip = saber_ip()
-    #compruebo y creo collection video
-    if (mongo.db.Ip.find({})):
-        #consulto si existe 0 = false, 1 = true
-        if(mongo.db.Ip.count({'ip': ip })):
-            #traigo datos de tabla Ip y video para comparar sus fechas
-            datos_lista = mongo.db.video.find_one_or_404({'_id': '1'})
-            datos_ip = mongo.db.Ip.find_one_or_404({'ip': ip}) 
-            if(datos_lista['creacion'] == datos_ip['creacion']):
-                #si son iguales mando los datos paso
-                pass
-            else:
-                #actualizo la creacion en la tabla Ip
-                datos_ip['creacion'] = datos_lista['creacion']
-                mongo.db.Ip.replace_one({'ip': ip}, datos_ip)
-            #si la longitud de la lista es igual a cont le devuelve a cero
-            print len(datos_lista['lista'])
-            if(len(datos_lista['lista']) == datos_ip['cont']):
-                datos_ip['cont'] = 0
-                mongo.db.Ip.replace_one({'ip': ip}, datos_ip)
-            #vuelvo a traer los datos de ip
-            datos_ip = mongo.db.Ip.find_one_or_404({'ip': ip})  
-            print datos_ip['cont']
-            #preparo para enviar 
-            tiempo_actual = datos_ip["tiempo"]
-            cont = datos_ip["cont"]
-            video = datos_lista["lista"][cont]
+    if(mongo.db.Ip.find_one({'ip': ip })):
+        #traigo datos de tabla Ip y video para comparar sus fechas
+        datos_lista = mongo.db.video.find_one({'_id': '1'})
+        datos_ip = mongo.db.Ip.find_one({'ip': ip}) 
+        if(datos_lista['creacion'] == datos_ip['creacion']):
+            #si son iguales mando los datos paso
+            pass
+        else:
+            #actualizo la creacion en la tabla Ip
+            mongo.db.Ip.update({"ip":ip}, {'$set':{'creacion': datos_lista['creacion']}})
+            mongo.db.Ip.update({"ip":ip}, {'$set':{'cont': 0 }})
+        #si la longitud de la lista es igual a cont le devuelve a cero
+        if(len(datos_lista['lista']) == datos_ip['cont']):
+            mongo.db.Ip.update({"ip":ip}, {'$set':{'cont': 0 }})
+        #vuelvo a traer los datos de ip
+        datos_ip = mongo.db.Ip.find_one({'ip': ip})  
+        #preparo para enviar 
+        tiempo_actual = datos_ip["tiempo"]
+        cont = datos_ip["cont"]
+        video = datos_lista["lista"][cont]
+        return render_template('repro_video.html',
+                                video = vide + video,
+                                tiempo = tiempo_actual,
+                                cont = cont
+                                )
+    else:
+        datos_lista = mongo.db.video.count({'_id': '1'})
+        if datos_lista: 
+            #obtengo la columna 1, con el fin de obtener la creacion de la lista
+            data_video = mongo.db.video.find_one({'_id': '1'})
+            #Inserto el primer elemento para esta ip
+            mongo.db.Ip.insert_one({
+                                    "ip": ip,
+                                    "cont": 0,
+                                    "tiempo":  0,
+                                    "creacion": data_video['creacion']
+                                    })
+            nom_video = mongo.db.video.find_one({'_id': '1'})
+            cont = mongo.db.Ip.find_one({'ip': ip})
+            video = nom_video['lista'][cont['cont']]
             return render_template('repro_video.html',
                                     video = vide + video,
-                                    tiempo = tiempo_actual,
-                                    cont = cont
+                                    cont = cont['cont']
                                     )
-        else:
-            datos_lista = mongo.db.video.count({'_id': '1'})
-            if datos_lista: 
-                #obtengo la columna 1, con el fin de obtener la creacion de la lista
-                data_video = mongo.db.video.find_one_or_404({'_id': '1'})
-                #Inserto el primer elemento para esta ip
-                mongo.db.Ip.insert_one({
-                                        "ip": ip,
-                                        "cont": 0,
-                                        "tiempo":  0,
-                                        "creacion": data_video['creacion']
-                                        })
-                nom_video = mongo.db.video.find_one_or_404({'_id': '1'})
-                cont = mongo.db.Ip.find_one_or_404({'ip': ip})
-                video = nom_video['lista'][cont['cont']]
-                return render_template('repro_video.html',
-                                        video = vide + video,
-                                        cont = cont['cont']
-                                        )
  
- 
-
-
-
 
 @app.route('/selecciona',methods=['GET'])
 def selecciona():
@@ -263,8 +259,7 @@ def selecciona():
 
 @app.route('/cargar_db',methods=['GET', 'POST'])
 def cargar_db():
-    data_user_db = mongo.db.usuario.find_one_or_404({'username': 'atacado'})
-    if data_user_db['estado'] == 'True':
+    if 'username' in session:
         if request.method == 'POST':
             #compruebo y creo collection video
             if (mongo.db.video.find({})):
@@ -275,14 +270,11 @@ def cargar_db():
                    #obtengo datos de db, y cambio lista
                     mongo.db.video.replace_one({"_id":"1"}, {"lista":lista, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y')})
                 else:
-    		# si no existe crea la lista
+                    # si no existe crea la lista
                     mongo.db.video.insert_one({"_id":"1", "lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
         return redirect(url_for('cargar_lista'))
     else:
-        return redirect(url_for('/login'))
-
-
-
+        return redirect(url_for('login'))
 
 @app.route('/producto/<id>',methods=['GET'])
 def index(id):
@@ -302,23 +294,37 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        data_user_db = mongo.db.usuario.find_one_or_404({'username': username})
-        if mongo.db.usuario.count({'username': username}):
-            data_user_db = mongo.db.usuario.find_one_or_404({'username': username})
-            if (data_user_db['password'] == hashlib.new("sha1", password).hexdigest() and data_user_db['username'] == username ):
-                data_user_db["estado"] = "True"
-                mongo.db.usuario.replace_one({"username":username}, {"username": username, "password": data_user_db['password'], "estado": data_user_db["estado"]})
+        if (username != "" and password != ""):
+            if (mongo.db.usuario.find_one({'username': username}) and mongo.db.usuario.find_one({'password': hashlib.new("sha1", password).hexdigest()})):
+                session['username'] = username
                 return redirect(url_for('biblioteca'))
-        return render_template('login.html')
-    if request.method == 'GET':
-        return render_template('login.html')
+            else:
+                return render_template('login.html', title = 'Login', tipo = "message_info(1);")
+        else:
+            return render_template('login.html', title = 'Login', tipo = "message_info(2);")
+    return render_template('login.html', title = 'Login')
 
-@app.route('/salir', methods = ['GET'])
-def salir():
-    user = 'atacado'
-    data_user_db = mongo.db.usuario.find_one_or_404({'username': user })
-    mongo.db.usuario.replace_one({"username":user}, {"username": user, "password": hashlib.new("sha1", user).hexdigest(), "estado": "False" })
+@app.route('/logout', methods = ['GET'])
+def logout():
+    if 'username' in session:
+        session.pop('username')
     return redirect(url_for('login'))
+
+@app.route('/nuevo_usuario', methods = ['GET', 'POST'])
+def nuevo_usuario():
+    if 'username' in session:
+        if(session['username'] == 'root'):
+            if request.method == 'POST':
+                mongo.db.video.insert_one({'username': request.form['username'], 'password': hashlib.new("sha1", request.form['username']).hexdigest() })
+                return render_template('crear_usuario.html', title = 'Nuevo_User', tipo='message_info(3);')
+            else:
+                return render_template('crear_usuario.html', title = 'Nuevo_User') 
+        else:
+            return render_template('home.html', title = "Home", tipo='message_info(3);')
+    return redirect(url_for('login'))
+
+#para obtener cookie
+#request.cookies.get('nomcookie')
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0')

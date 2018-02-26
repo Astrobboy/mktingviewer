@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<title>{{ title }}</title>
+	<script src="{{ url_for('static', filename='js/sweetalert.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/sweetalert.js') }}"></script>
+	<link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+</head>
+{% if tipo %}
+	<body onLoad="{{ tipo }}">
+{% else %}
+	<body>
+{% endif %}
+	<header id="encima">
+		<div class="navbar navbar-inverse" role="navigation">
+		    <div class="container">
+		        <div class="navbar-header">
+		            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		                <span class="sr-only">Toggle navigation</span>
+		                <span class="icon-bar"></span>
+		                <span class="icon-bar"></span>
+		                <span class="icon-bar"></span>
+		            </button>
+		            <a class="navbar-brand" href="/">Home</a>
+		        </div>
+		        <div class="navbar-collapse collapse">
+		            <ul class="nav navbar-nav">
+                		<li><a href="/cargar_videos">Cargar Videos</a></li>
+           			</ul>
+		            <ul class="nav navbar-nav">
+		                <li><a href="/cargar_lista">Ver Lista</a></li>
+		            </ul>
+		            <ul class="nav navbar-nav">
+		                <li><a href="/nuevo_usuario">Cargar Usuario</a></li>
+		            </ul>
+		            <ul class="nav navbar-nav">
+		                <li><a href="/logout">Salir</a></li>
+		            </ul>
+		        </div>
+		    </div>
+		</div>
+	</header>
+	{% block login %}
+	{% endblock %}
+	
+</body>
+</html>

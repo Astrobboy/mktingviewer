@@ -11,6 +11,11 @@ body{
 	font-size: 12px;
 }
 
+#encima {
+	z-index: 8;
+    position: relative;
+}
+
 .body{
 	position: absolute;
 	top: -20px;
