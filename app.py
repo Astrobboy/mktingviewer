@@ -322,7 +322,7 @@ def nuevo_usuario():
             if request.method == 'POST':
                 username = request.form['username']
                 password = request.form['password']
-                if (username != "" and password != "" )
+                if (username != "" and password != "" ):
                     mongo.db.video.insert_one({'username': username, 'password': hashlib.new("sha1", password).hexdigest() })
                     return render_template('crear_usuario.html', title = 'Nuevo_User', tipo='message_info(3);')
                 else:
