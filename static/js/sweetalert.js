@@ -5,5 +5,7 @@ function message_info(tipo){
 		swal("Verifica que todo este bien", "No puedes dejar los campos vacios", "warning");
 	}else if (tipo == 3){
 		swal("Excelente", "Has creado un nuevo usuario", "success");
+	}else if (tipo == 4){
+		swal("Lo siento", "Tu cuenta no puede crear usuarios", "error");
 	}
 }

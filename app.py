@@ -46,6 +46,7 @@ def saber_ip():
 @socketio.on("datos")
 def handle_connection(json_data):
     ip = saber_ip()
+    print "holaaa"
     if (mongo.db.Ip.find_one({'ip': ip})):
         data_video = mongo.db.video.find_one({'_id': '1'})
         data_ip = mongo.db.Ip.find_one({'ip': ip})
@@ -208,18 +209,22 @@ def play():
     time.sleep(0.3)
     ip = saber_ip()
     if(mongo.db.Ip.find_one({'ip': ip })):
+        print "entre"
         #traigo datos de tabla Ip y video para comparar sus fechas
         datos_lista = mongo.db.video.find_one({'_id': '1'})
         datos_ip = mongo.db.Ip.find_one({'ip': ip}) 
         if(datos_lista['creacion'] == datos_ip['creacion']):
+            print "entre2"
             #si son iguales mando los datos paso
             pass
         else:
+            print "entre3"
             #actualizo la creacion en la tabla Ip
             mongo.db.Ip.update({"ip":ip}, {'$set':{'creacion': datos_lista['creacion']}})
             mongo.db.Ip.update({"ip":ip}, {'$set':{'cont': 0 }})
         #si la longitud de la lista es igual a cont le devuelve a cero
         if(len(datos_lista['lista']) == datos_ip['cont']):
+            print "entre 4"
             mongo.db.Ip.update({"ip":ip}, {'$set':{'cont': 0 }})
         #vuelvo a traer los datos de ip
         datos_ip = mongo.db.Ip.find_one({'ip': ip})  
@@ -320,7 +325,7 @@ def nuevo_usuario():
             else:
                 return render_template('crear_usuario.html', title = 'Nuevo_User') 
         else:
-            return render_template('home.html', title = "Home", tipo='message_info(3);')
+            return render_template('home.html', title = "Home", tipo='message_info(4);')
     return redirect(url_for('login'))
 
 #para obtener cookie
