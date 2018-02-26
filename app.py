@@ -16,6 +16,7 @@ from lib.upload_file import uploadfile
 
 import time
 import hashlib
+from datetime import timedelta
 
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
@@ -24,6 +25,7 @@ vide = '../data/'
 
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=61200)
 mongo = PyMongo(app)
 csrf = CSRFProtect(app)
 
