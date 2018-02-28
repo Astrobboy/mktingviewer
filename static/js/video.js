@@ -25,8 +25,9 @@ video.addEventListener("ended", function() {
 
 
 function envio_json(cont, tiempo){
-	var token = document.getElementById('token').value
-	var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']}, {"token": token});
+	//var token = document.getElementById('token').value
+	//var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']}, {"token": token});
+	var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']});
 	json_data = {
 			"cont": cont,
 			"tiempo":  tiempo
@@ -49,3 +50,4 @@ function duracion(){
 		return video.currentTime ;
 	}
 }
+

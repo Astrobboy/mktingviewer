@@ -9,7 +9,7 @@ from flask_socketio import SocketIO,send, emit
 from flask_bootstrap import Bootstrap
 from werkzeug import secure_filename
 from flask_pymongo import PyMongo
-from flask_wtf import CSRFProtect
+#from flask_wtf import CSRFProtect
 from flask import session
 
 from lib.upload_file import uploadfile
@@ -27,7 +27,7 @@ app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=61200)
 mongo = PyMongo(app)
-csrf = CSRFProtect(app)
+#csrf = CSRFProtect(app)
 
 ALLOWED_EXTENSIONS = set(['mp4', 'png'])
 IGNORED_FILES = set(['.gitignore'])
