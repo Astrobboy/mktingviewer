@@ -4,13 +4,13 @@ var InfiniteRotator =
         init: function()
         {
             //initial fade-in time (in milliseconds)
-            var initialFadeIn = 500;
+            var initialFadeIn = 200;
  
             //interval between items (in milliseconds)
-            var itemInterval = 5000;
+            var itemInterval = 1800;
  
             //cross-fade time (in milliseconds)
-            var fadeTime = 2500;
+            var fadeTime = 500;
  
             //count number of items
             var numberOfItems = $('.rotating-item').length;
