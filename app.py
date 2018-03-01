@@ -54,9 +54,12 @@ def handle_connection(json_data):
         #comparo si son iguales los timepos de creacion de las listas
         if (data_ip['creacion'] == data_video['creacion']):
             # si es solo almaceno tiempo y cont
-            data_ip['cont'] = json_data['cont']
+	    if (len(data_video['lista']) >= data_ip['cont']):
+		data_ip['cont'] = 0 
+	    else:          
+ 		data_ip['cont'] = json_data['cont']
             data_ip['tiempo'] = json_data['tiempo']
-            mongo.db.Ip.replace_one({'ip': ip}, data_ip)
+	    mongo.db.Ip.replace_one({'ip': ip}, data_ip)
         else:
             # almaceno tiempo y cont en 0 y la nueva  creacion
             data_ip['creacion'] = data_video['creacion']
@@ -219,9 +222,6 @@ def play():
         else:
             #actualizo la creacion en la tabla Ip
             mongo.db.Ip.update({"ip":ip}, {'$set':{'creacion': datos_lista['creacion']}})
-            mongo.db.Ip.update({"ip":ip}, {'$set':{'cont': 0 }})
-        #si la longitud de la lista es igual a cont le devuelve a cero
-        if(len(datos_lista['lista']) == datos_ip['cont']):
             mongo.db.Ip.update({"ip":ip}, {'$set':{'cont': 0 }})
         #vuelvo a traer los datos de ip
         datos_ip = mongo.db.Ip.find_one({'ip': ip})  
