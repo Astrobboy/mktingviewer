@@ -13,7 +13,7 @@ function verificar(tiempo, contador){
 window.onbeforeunload = function (event) {
 	tiempo_actual = duracion();
 	if(video.currentTime == video.duration){
-		cont += 1 ;		
+		cont += 1;		
 	}
 	envio_json(cont, tiempo_actual);
 }
@@ -25,18 +25,16 @@ video.addEventListener("ended", function() {
 
 
 function envio_json(cont, tiempo){
-	//var token = document.getElementById('token').value
-	//var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']}, {"token": token});
-	var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']});
-	json_data = {
+	$.ajax({
+    type: "POST",
+    url: "/datos",
+    data: JSON.stringify({
 			"cont": cont,
 			"tiempo":  tiempo
-			} 
-	socket.emit('datos', json_data); //envio a datos
-	console.log(json_data);
-	//setTimeout(() => {
-	//socket.disconnect();
-	//}, 500);
+			}),
+	contentType: 'application/json'
+	});
+	
 }	
 
 
@@ -51,3 +49,15 @@ function duracion(){
 	}
 }
 
+//var token = document.getElementById('token').value
+	/*json_data = {
+			"cont": cont,
+			"tiempo":  tiempo
+			} 
+	socket.emit('datos', json_data); //envio a datos
+	console.log(json_data);*/
+	//setTimeout(() => {
+	//socket.disconnect();
+	//}, 500);
+	//var socket = io.connect('http://' + document.domain + ':' + location.port, {transports: ['websocket']}, {"token": token});
+	

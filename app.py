@@ -3,6 +3,7 @@ import simplejson
 import traceback
 import json
 import subprocess
+import pdb
 
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory, g
 from flask_socketio import SocketIO,send, emit
@@ -45,30 +46,6 @@ def saber_ip():
     return ip
 
 
-@socketio.on("datos")
-def handle_connection(json_data):
-    ip = saber_ip()
-    data_video = mongo.db.video.find_one({'_id': '1'})
-    if (mongo.db.Ip.find_one({'ip': ip})):
-        data_ip = mongo.db.Ip.find_one({'ip': ip})
-        #comparo si son iguales los timepos de creacion de las listas
-        if (data_ip['creacion'] == data_video['creacion']):
-            # si es solo almaceno tiempo y cont
-	        if (len(data_video['lista'])-1 <= data_ip['cont']):
-		        data_ip['cont'] = 0 
-	        else:          
- 		        data_ip['cont'] = json_data['cont']
-        else:
-            data_ip['creacion'] = data_video['creacion']
-            data_ip['cont'] = 0
-        data_ip['tiempo'] = json_data['tiempo']
-        mongo.db.Ip.replace_one({'ip': ip}, data_ip)
-    else:
-        data_video = mongo.db.video.find_one({'_id': '1'})
-        json_data['ip'] = ip 
-        json_data['creacion'] = data_video['creacion']
-        #almaceno
-        mongo.db.Ip.insert_one(json_data)   
 
 
 def video_default():
@@ -324,8 +301,38 @@ def nuevo_usuario():
             return render_template('home.html', title = "Home", tipo='message_info(4);')
     return redirect(url_for('login'))
 
+@app.route("/datos", methods = ['GET', 'POST'])
+def handle_connection():
+    if request.method == 'POST':
+        #print(str(request.json["tiempo"])+";" + str(request.json["cont"]));
+        ip = saber_ip()
+        data_video = mongo.db.video.find_one({'_id': '1'})
+        if (mongo.db.Ip.find_one({'ip': ip})):
+            data_ip = mongo.db.Ip.find_one({'ip': ip})
+            #comparo si son iguales los timepos de creacion de las listas
+            if (data_ip['creacion'] == data_video['creacion']):
+                # si es solo almaceno tiempo y cont
+                if (len(data_video['lista']) <=  request.json["cont"]):
+                    #print "estoy aqui y no deberia"
+                    data_ip['cont'] = 0 
+                else:                  
+                    #print "estoy aqui y no deberia >>> %d <= %d" %(len(data_video['lista']),request.json["cont"])
+                    data_ip['cont'] = request.json["cont"]
+            else:
+                data_ip['creacion'] = data_video['creacion']
+                data_ip['cont'] = 0
+            data_ip['tiempo'] = request.json["tiempo"]
+            mongo.db.Ip.replace_one({'ip': ip}, data_ip)
+        else:
+            datos = { "cont" : request.json["cont"], "tiempo" : request.json["tiempo"]}
+            data_video = mongo.db.video.find_one({'_id': '1'})
+            datos['ip'] = ip 
+            datos['creacion'] = data_video['creacion']
+            #almaceno
+            mongo.db.Ip.insert_one(datos) 
+    return "ok"
 #para obtener cookie
 #request.cookies.get('nomcookie')
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0')
+    app.run(debug=True, host="0.0.0.0")
