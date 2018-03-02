@@ -46,8 +46,6 @@ def saber_ip():
     return ip
 
 
-
-
 def video_default():
     video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
     return video_files[0]
