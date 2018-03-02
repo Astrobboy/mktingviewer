@@ -54,7 +54,7 @@ def handle_connection(json_data):
         #comparo si son iguales los timepos de creacion de las listas
         if (data_ip['creacion'] == data_video['creacion']):
             # si es solo almaceno tiempo y cont
-	    if (len(data_video['lista']) >= data_ip['cont']):
+	    if (len(data_video['lista'])-1 <= data_ip['cont']):
 		data_ip['cont'] = 0 
 	    else:          
  		data_ip['cont'] = json_data['cont']
