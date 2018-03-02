@@ -47,6 +47,7 @@ def saber_ip():
 
 @socketio.on("datos")
 def handle_connection(json_data):
+    print(json_data)
     ip = saber_ip()
     data_video = mongo.db.video.find_one({'_id': '1'})
     if (mongo.db.Ip.find_one({'ip': ip})):
@@ -54,7 +55,7 @@ def handle_connection(json_data):
         #comparo si son iguales los timepos de creacion de las listas
         if (data_ip['creacion'] == data_video['creacion']):
             # si es solo almaceno tiempo y cont
-	        if (len(data_video['lista'])-1 <= data_ip['cont']):
+	        if (len(data_video['lista']) <= json_data['cont']):
 		        data_ip['cont'] = 0 
 	        else:          
  		        data_ip['cont'] = json_data['cont']
