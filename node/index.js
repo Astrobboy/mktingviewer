@@ -27,6 +27,8 @@ MongoClient.connect(url_db, function(err, client) {
 			const db = client.db(dbName);
 			// Get the producto collection
 			const collection = db.collection('producto');
+
+			//TODO -> restructurar la logica para que no apague de balde... Hay cambios? Actualizar directo en la base de dados!
 			collection.remove({}).then(() => {
 				//for par agrupar los datos
 				for (var i = 0; i < codigo.length; i++) {
@@ -48,6 +50,10 @@ MongoClient.connect(url_db, function(err, client) {
 							stock:  values_object[valor[4]] 
 						}
 						]);
+					//TODO -> for x in link_images: values_object[valor[2]].keys() y 
+					//ejecutar syscall al script ../checkfile.sh [link]. Descargar las imagenes
+					//OJO! quitar la linea de codigo en app.py que ejecuta este comando
+					//Ver https://stackoverflow.com/questions/44647778/how-to-run-shell-script-file-using-nodejs
 				}
 				client.close();
 				console.log("Sali!");
