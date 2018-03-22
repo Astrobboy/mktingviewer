@@ -12,5 +12,8 @@
     "axios": "^0.18.0",
     "jsonlint": "^1.6.3",
     "mongodb": "^3.0.2"
+  },
+  "dependencies": {
+    "shelljs": "^0.8.1"
   }
 }
