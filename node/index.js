@@ -34,7 +34,7 @@ MongoClient.connect(url_db, function (err, client) {
 				var codigo = Object.keys(json);
 
 				//comparo los valores de json pag y json db codigo.length
-				for (var i = 0; i < 2; i++) {
+				for (var i = 0; i < codigo.length; i++) {
 
 					//guarda en valor el objeto de la clave en ese momento
 					var valor = Object.keys(json[codigo[i]]);
@@ -67,18 +67,12 @@ MongoClient.connect(url_db, function (err, client) {
 					//console.log(result);
 					collection.remove({}).then(() => {
 						//for par agrupar los datos
-						for (var i = 0; i < 2; i++) {
+						for (var i = 0; i < codigo.length; i++) {
 							//guarda en valor el objeto de la clave en ese momento
 							var valor = Object.keys(json[codigo[i]]);
 							//obtengo en otro objeto el valor del objeto anterior
 							var values_object = json[codigo[i]];
 							// Insert some producto
-							console.log('codigo:', codigo[i]);
-							console.log('title:', values_object[valor[0]]);
-							console.log('description:', values_object[valor[1]]);
-							console.log('link_images:', values_object[valor[2]]);
-							console.log('price:', values_object[valor[3]]);
-							console.log('stock:', values_object[valor[4]]);
 							collection.insertMany([
 								{
 									codigo: codigo[i],
@@ -90,7 +84,6 @@ MongoClient.connect(url_db, function (err, client) {
 								}
 
 							]);
-							console.log('link_images: ', values_object[valor[2]]);
 							for (var y = 0; y < values_object[valor[2]].length; y++) {
 								shell.exec(`../checkfile.sh ${values_object[valor[2]][y]}`);
 							}
