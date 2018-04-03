@@ -60,7 +60,7 @@ MongoClient.connect(url_db, function (err, client) {
 					}
 
 				}
-				console.log(valor_prueba);
+				//console.log(valor_prueba);
 
 				// si son distintos va a borrar los datos e insertar de nuevo
 				if (valor_prueba != true) {

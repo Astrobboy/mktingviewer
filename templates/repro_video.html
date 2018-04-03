@@ -9,8 +9,10 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Play</title>
+	<script>if (typeof module === 'object'){window.module=module;module=undefined;}</script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>   
 	<!--<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>-->
+	<script>if (window.module) module = window.module;</script>
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 {% if tiempo %}
