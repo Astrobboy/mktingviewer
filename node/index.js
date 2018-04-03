@@ -11,8 +11,8 @@ const url_db = 'mongodb://localhost:27017';
 const dbName = 'atacado_producto';
 
 //const que va a probar si el array se modifico o no
-const valor_prueba = true;
-const result = '';
+var valor_prueba = true;
+var result = '';
 
 const URL = "http://www2.atacadogames.com/app/produtos.json";
 
@@ -40,6 +40,7 @@ MongoClient.connect(url_db, function (err, client) {
 					var valor = Object.keys(json[codigo[i]]);
 					//obtengo en otro objeto el valor del objeto anterior
 					var values_object = json[codigo[i]];
+					
 					//compruebo el array de db con el de pag
 					if (values_object.link_images.length != result[i].link_images.length) {
 						valor_prueba = false;
@@ -60,7 +61,7 @@ MongoClient.connect(url_db, function (err, client) {
 					}
 
 				}
-				console.log(valor_prueba);
+				//console.log(valor_prueba);
 
 				// si son distintos va a borrar los datos e insertar de nuevo
 				if (valor_prueba != true) {
