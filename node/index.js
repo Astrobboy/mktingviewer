@@ -11,8 +11,8 @@ const url_db = 'mongodb://localhost:27017';
 const dbName = 'atacado_producto';
 
 //const que va a probar si el array se modifico o no
-const valor_prueba = true;
-const result = '';
+var valor_prueba = true;
+var result = '';
 
 const URL = "http://www2.atacadogames.com/app/produtos.json";
 
@@ -40,23 +40,24 @@ MongoClient.connect(url_db, function (err, client) {
 					var valor = Object.keys(json[codigo[i]]);
 					//obtengo en otro objeto el valor del objeto anterior
 					var values_object = json[codigo[i]];
+					
 					//compruebo el array de db con el de pag
 					if (values_object.link_images.length != result[i].link_images.length) {
 						valor_prueba = false;
-						console.log('aqui');
+					
 					}
 
 					if (values_object.title == result[i].title &&
 						values_object.description == result[i].description &&
 						valor_prueba) {
-						console.log('no hubo cambios');
+						//console.log('no hubo cambios');
 						client.close();
-						for (var y = 0; y < values_object[valor[2]].length; y++) {
+						/*for (var y = 0; y < values_object[valor[2]].length; y++) {
 							// cambiar a esta ruta
 							// /home/astro/mktingviewer/static/img/productos/
 							shell.exec(`../checkfile.sh ${values_object[valor[2]][y]}`)
 							console.log('termine');
-						}
+						}*/
 					}
 
 				}
