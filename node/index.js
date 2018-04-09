@@ -32,40 +32,44 @@ MongoClient.connect(url_db, function (err, client) {
 			if (json) {
 				//obtengo codigo de los objeto 
 				var codigo = Object.keys(json);
+				console.log(codigo.length)
+				console.log(result.length)
 
 				//comparo los valores de json pag y json db codigo.length
-				for (var i = 0; i < codigo.length; i++) {
-
-					//guarda en valor el objeto de la clave en ese momento
-					var valor = Object.keys(json[codigo[i]]);
-					//obtengo en otro objeto el valor del objeto anterior
-					var values_object = json[codigo[i]];
-					
-					//compruebo el array de db con el de pag
-					if (values_object.link_images.length != result[i].link_images.length) {
-						valor_prueba = false;
-					
+				if (codigo.length == result.length){
+					for (var i = 0; i < codigo.length; i++) {
+	
+						//guarda en valor el objeto de la clave en ese momento
+						var valor = Object.keys(json[codigo[i]]);
+						//obtengo en otro objeto el valor del objeto anterior
+						var values_object = json[codigo[i]];
+						
+						//compruebo el array de db con el de pag
+						if (values_object.link_images.length != result[i].link_images.length) {
+							valor_prueba = false;
+						
+						}
+	
+						if (values_object.title == result[i].title &&
+							values_object.description == result[i].description &&
+							valor_prueba) {
+							//console.log('no hubo cambios');
+							//client.close();
+							/*for (var y = 0; y < values_object[valor[2]].length; y++) {
+								// cambiar a esta ruta
+								// /home/astro/mktingviewer/static/img/productos/
+								shell.exec(`../checkfile.sh ${values_object[valor[2]][y]}`)
+								console.log('termine');
+							}*/
+						}
+	
 					}
-
-					if (values_object.title == result[i].title &&
-						values_object.description == result[i].description &&
-						valor_prueba) {
-						//console.log('no hubo cambios');
-						client.close();
-						/*for (var y = 0; y < values_object[valor[2]].length; y++) {
-							// cambiar a esta ruta
-							// /home/astro/mktingviewer/static/img/productos/
-							shell.exec(`../checkfile.sh ${values_object[valor[2]][y]}`)
-							console.log('termine');
-						}*/
-					}
-
 				}
+
 				//console.log(valor_prueba);
 
 				// si son distintos va a borrar los datos e insertar de nuevo
 				if (valor_prueba != true) {
-					//console.log(result);
 					collection.remove({}).then(() => {
 						//for par agrupar los datos
 						for (var i = 0; i < codigo.length; i++) {
@@ -89,11 +93,11 @@ MongoClient.connect(url_db, function (err, client) {
 								shell.exec(`../checkfile.sh ${values_object[valor[2]][y]}`);
 							}
 						}
-						console.log("Sali!");
-						client.close();
 					}).catch(e => console.log(e));
 				}
 			}
+			console.log("Sali!");
+			client.close();
 		}).catch(e => console.log(e));
 	});
 
