@@ -32,8 +32,6 @@ MongoClient.connect(url_db, function (err, client) {
 			if (json) {
 				//obtengo codigo de los objeto 
 				var codigo = Object.keys(json);
-				console.log(codigo.length)
-				console.log(result.length)
 
 				//comparo los valores de json pag y json db codigo.length
 				if (codigo.length == result.length){
@@ -49,10 +47,23 @@ MongoClient.connect(url_db, function (err, client) {
 							valor_prueba = false;
 						
 						}
+						if (i == 3){
+							console.log(values_object.title)
+							console.log(result[i].title)
+							console.log(values_object.description)
+							console.log(result[i].description)
+							console.log(valor_prueba)
+							//console.log("")
+
+						}
 	
 						if (values_object.title == result[i].title &&
 							values_object.description == result[i].description &&
 							valor_prueba) {
+								if (result[i] == result.length && valor_prueba) {
+									console.log("Sali!");
+									client.close();
+								}
 							//console.log('no hubo cambios');
 							//client.close();
 							/*for (var y = 0; y < values_object[valor[2]].length; y++) {
@@ -61,16 +72,22 @@ MongoClient.connect(url_db, function (err, client) {
 								shell.exec(`../checkfile.sh ${values_object[valor[2]][y]}`)
 								console.log('termine');
 							}*/
+						}else{
+							valor_prueba = false;
 						}
 	
 					}
+				}else{
+					valor_prueba = false;
 				}
 
 				//console.log(valor_prueba);
 
 				// si son distintos va a borrar los datos e insertar de nuevo
 				if (valor_prueba != true) {
+					console.log('cambiare')
 					collection.remove({}).then(() => {
+						console.log("entre");
 						//for par agrupar los datos
 						for (var i = 0; i < codigo.length; i++) {
 							//guarda en valor el objeto de la clave en ese momento
@@ -93,11 +110,12 @@ MongoClient.connect(url_db, function (err, client) {
 								shell.exec(`../checkfile.sh ${values_object[valor[2]][y]}`);
 							}
 						}
+						console.log("Sali!");
+						client.close();
 					}).catch(e => console.log(e));
 				}
 			}
-			console.log("Sali!");
-			client.close();
+			
 		}).catch(e => console.log(e));
 	});
 
