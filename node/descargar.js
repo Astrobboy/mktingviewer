@@ -10,7 +10,7 @@ const url_db = 'mongodb://localhost:27017';
 // Database Name
 const dbName = 'atacado_producto';
 
-const result = '';
+var result = '';
 
 
 
