@@ -331,6 +331,10 @@ def handle_connection():
     return "ok"
 #para obtener cookie
 #request.cookies.get('nomcookie')
+
+@app.route("/prueba", methods = ['GET', 'POST'])
+def prueba():
+    return render_template('prueba.html')
  
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
