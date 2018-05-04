@@ -106,9 +106,9 @@ MongoClient.connect(url_db, function (err, client) {
 								}
 
 							]);
-							for (var y = 0; y < values_object[valor[2]].length; y++) {
-								shell.exec(`../checkfile.sh ${values_object[valor[2]][y]}`);
-							}
+							//for (var y = 0; y < values_object[valor[2]].length; y++) {
+							//	shell.exec(`/home/astro/mktingviewer/checkfile.sh ${values_object[valor[2]][y]}`);
+							//}
 						}
 						console.log("Sali!");
 						client.close();
