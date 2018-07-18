@@ -3,9 +3,9 @@ let cont;
 
 function verificar(tiempo, contador) {
     cont = contador;
-    console.log(tiempo)
     if (tiempo == 'false') {
         //paso
+        console.log("hola")
     } else {
         video.currentTime = tiempo;
     }
