@@ -258,7 +258,8 @@ def cargar_db():
                     mongo.db.video.replace_one({"_id":"1"}, {"lista":lista, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y')})
                 else:
                     # si no existe crea la lista
-                    mongo.db.video.insert_one({"_id":"1", "lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
+                    array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries')
+                    mongo.db.video.insert_one({"_id":"1", "lista":array, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
         return redirect(url_for('cargar_lista'))
     #else:
     #    return redirect(url_for('login'))
