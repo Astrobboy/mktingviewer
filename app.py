@@ -19,6 +19,8 @@ import time
 import hashlib
 from datetime import timedelta
 
+from os import walk, getcwd
+
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
 
@@ -172,12 +174,25 @@ def biblioteca():
 
 @app.route('/cargar_lista', methods=['GET', 'POST'])
 def cargar_lista():
-    if 'username' in session:
-        video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
-        return render_template('cargar_lista.html', videos=video_files)
-    else:
-        return redirect(url_for('login'))
+    #video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+    video_files = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries')
+    return render_template('cargar_lista.html', videos=video_files)
 
+
+def ls(ruta=getcwd()):
+    #listaarchivos = []
+    new_array = []
+    for (_, subdirs, archivos) in walk(ruta):
+      #elimino esta ruta
+      rut = _.lstrip('srv/mediagoblin.example.org/\
+        mediagoblin/user_dev/media/public/media_entries')
+      #prdeno la ruta de la url
+      rut = 'mgoblin_media/media_entries/' + rut + '/'
+      for archivo in archivos:
+        if not '.jpg' in archivo:  # agarra del array el que no tiene dentro .jpg
+          new_array.append(rut+archivo)
+      #listaarchivos.extend(subdirs+archivos)
+    return new_array
 
 
 @app.route('/play', methods=['GET'])
