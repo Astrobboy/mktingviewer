@@ -336,6 +336,13 @@ def handle_connection():
 def prueba():
     return render_template('prueba.html')
 
+
+@app.route("/lista", methods=['GET', 'POST'])
+def lista(lista=[]):
+    #lista  = request.args.get('lista')
+    print request.get_data("lista")
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
  
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
