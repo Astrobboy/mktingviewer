@@ -338,7 +338,7 @@ def handle_connection():
             if (data_ip['creacion'] == data_video['creacion']):
                 # si es solo almaceno tiempo y cont
                 if (len(data_video['lista']) <=  request.json["cont"]):
-                    #print "estoy aqui y no deberia"
+                    print request.json["cont"]
                     data_ip['cont'] = 0 
                 else:                  
                     #print "estoy aqui y no deberia >>> %d <= %d" %(len(data_video['lista']),request.json["cont"])
