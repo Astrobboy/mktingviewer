@@ -245,13 +245,14 @@ def selecciona():
 
 @app.route('/cargar_db',methods=['GET', 'POST'])
 def cargar_db():
-    if 'username' in session:
+    #if 'username' in session:
         if request.method == 'POST':
             #compruebo y creo collection video
             if (mongo.db.video.find({})):
                 #consulto si existe 0 = false, 1 = true
                 if(mongo.db.video.count({'_id': '1'})):
                     #si existe cambia la lista
+                    print request.form.getlist('select_video')
                     lista = request.form.getlist('select_video')
                    #obtengo datos de db, y cambio lista
                     mongo.db.video.replace_one({"_id":"1"}, {"lista":lista, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y')})
@@ -259,8 +260,8 @@ def cargar_db():
                     # si no existe crea la lista
                     mongo.db.video.insert_one({"_id":"1", "lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
         return redirect(url_for('cargar_lista'))
-    else:
-        return redirect(url_for('login'))
+    #else:
+    #    return redirect(url_for('login'))
 
 @app.route('/producto/<id>',methods=['GET'])
 def index(id):
