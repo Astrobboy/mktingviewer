@@ -179,7 +179,7 @@ def cargar_lista():
     return render_template('cargar_lista.html', videos=video_files)
 
 
-def ls(ruta=getcwd(), valor):
+def ls(ruta=getcwd(), valor=True):
     #listaarchivos = []
     new_array = []
     for (_, subdirs, archivos) in walk(ruta):
