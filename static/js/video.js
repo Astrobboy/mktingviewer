@@ -3,6 +3,7 @@ let cont;
 
 function verificar(tiempo, contador) {
     cont = contador;
+    console.log(tiempo)
     if (tiempo == 'false') {
         //paso
     } else {

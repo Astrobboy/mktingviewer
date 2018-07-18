@@ -352,6 +352,8 @@ def handle_connection():
             data_ip['tiempo'] = request.json["tiempo"]
             mongo.db.Ip.replace_one({'ip': ip}, data_ip)
         else:
+            print "++++++++"
+            print request.json["cont"]
             datos = { "cont" : request.json["cont"], "tiempo" : request.json["tiempo"]}
             data_video = mongo.db.video.find_one({'_id': '1'})
             datos['ip'] = ip 
