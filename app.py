@@ -219,7 +219,7 @@ def play():
         cont = datos_ip["cont"]
         video = datos_lista["lista"][cont]
         return render_template('repro_video.html',
-                                video = vide + video,
+                                video = video,
                                 tiempo = tiempo_actual,
                                 cont = cont
                                 )
@@ -239,7 +239,7 @@ def play():
             cont = mongo.db.Ip.find_one({'ip': ip})
             video = nom_video['lista'][cont['cont']]
             return render_template('repro_video.html',
-                                    video = vide + video,
+                                    video = video,
                                     cont = cont['cont']
                                     )
  
