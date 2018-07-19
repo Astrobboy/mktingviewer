@@ -174,8 +174,8 @@ def biblioteca():
 
 @app.route('/cargar_lista', methods=['GET', 'POST'])
 def cargar_lista():
-    #video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
-    video_files = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', False)
+    video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+    #video_files = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', False)
     return render_template('cargar_lista.html', videos=video_files)
 
 
@@ -257,18 +257,19 @@ def cargar_db():
                 #consulto si existe 0 = false, 1 = true
                 if(mongo.db.video.count({'_id': '1'})):
                     #si existe cambia la lista
-                    listas = request.form.getlist('select_video')
-                    array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
-                    lista = []
-                    for video_name in listas:
-                        for nom_video_server in array:
-                            if video_name in nom_video_server:
-                                lista.append(nom_video_server)
+                    listas = vide + request.form.getlist('select_video')
+                    #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
+                    #lista = []
+                    #for video_name in listas:
+                    #    for nom_video_server in array:
+                    #        if video_name in nom_video_server:
+                    #            lista.append(nom_video_server)
                    #obtengo datos de db, y cambio lista
                     mongo.db.video.replace_one({"_id":"1"}, {"lista":lista, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y')})
                 else:
                     # si no existe crea la lista
-                    array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
+                    #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
+                    array = vide + request.form.getlist('select_video')
                     mongo.db.video.insert_one({"_id":"1", "lista":array, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
         return redirect(url_for('cargar_lista'))
     #else:
