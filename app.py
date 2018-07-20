@@ -172,7 +172,7 @@ def biblioteca():
 
 @app.route('/cargar_lista', methods=['GET', 'POST'])
 def cargar_lista():
-    video_files = [f for f in os.listdir(video_dir) if f.endswith(['mp4', 'ogv'])]
+    video_files = [f for f in os.listdir(video_dir) if f.endswith('ogv')]
     #video_files = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', False)
     return render_template('cargar_lista.html', videos=video_files)
 
