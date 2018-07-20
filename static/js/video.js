@@ -5,7 +5,6 @@ function verificar(tiempo, contador) {
     cont = contador;
     if (tiempo == 'false') {
         //paso
-        console.log("hola")
     } else {
         video.currentTime = tiempo;
     }

@@ -20,6 +20,7 @@ import hashlib
 from datetime import timedelta
 
 from os import walk, getcwd
+from flask_cors import CORS
 
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
@@ -29,6 +30,7 @@ vide = '../data/'
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=61200)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 mongo = PyMongo(app)
 #csrf = CSRFProtect(app)
 
@@ -104,7 +106,7 @@ def upload():
             else:
                 # save file to disk
                 uploaded_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-		files.save(uploaded_file_path)
+                files.save(uploaded_file_path)
                 # create thumbnail after saving
                 if mime_type.startswith('image'):
                     create_thumbnail(filename)
@@ -363,11 +365,5 @@ def prueba():
     return render_template('prueba.html')
 
 
-@app.route("/lista", methods=['GET', 'POST'])
-def lista(lista=[]):
-    #lista  = request.args.get('lista')
-    print request.get_data("lista")
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
- 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
