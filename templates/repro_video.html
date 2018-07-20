@@ -1,31 +1,43 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta http-equiv="Expires" content="0">
-	<meta http-equiv="Last-Modified" content="0">
-	<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
-	<meta http-equiv="Pragma" content="no-cache">
-	
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Play</title>
-	<script>if (typeof module === 'object'){window.module=module;module=undefined;}</script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>   
-	<!--<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>-->
-	<script>if (window.module) module = window.module;</script>
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Last-Modified" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Play</title>
+    <script>
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>-->
+    <script>
+        if (window.module) module = window.module;
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 {% if tiempo %}
-	<body onLoad="verificar({{ tiempo }}, {{ cont }});">
-{% else %}
-	<body onLoad="verificar('false', {{ cont }});">
-{% endif %}
-	<video id="demo" src="{{ video }}" type="video/mp4" controls autoplay muted></video>
-	
-	<script type="text/javascript" src="{{ url_for('static', filename='js/video.js') }}"></script>
-<!-- onload="verifica()" <label id="lista_videos" style="display:none;">{{ nom_videos }} </label> -->
 
-</body>
+<body onLoad="verificar({{ tiempo }}, {{ cont }});">
+    {% else %}
+
+    <body onLoad="verificar('false', {{ cont }});">
+        {% endif %}
+        <video id="demo" src="{{ video }}" type="video/mp4" controls autoplay muted></video>
+        <!--
+					<iframe width="1500" height="800" src="https://www.youtube.com/embed/V53Dea5AJuQ?autoplay=1"/>
+				-->
+
+        <script type="text/javascript" src="{{ url_for('static', filename='js/video.js') }}"></script>
+        <!-- onload="verifica()" <label id="lista_videos" style="display:none;">{{ nom_videos }} </label> -->
+
+    </body>
+
 </html>
-
-

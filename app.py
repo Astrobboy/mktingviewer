@@ -30,7 +30,7 @@ app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=61200)
 mongo = PyMongo(app)
 #csrf = CSRFProtect(app)
 
-ALLOWED_EXTENSIONS = set(['mp4', 'png'])
+ALLOWED_EXTENSIONS = set(['mp4', 'ogv'])
 IGNORED_FILES = set(['.gitignore'])
 
 
