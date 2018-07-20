@@ -84,7 +84,7 @@ def create_thumbnail(image):
         return True
 
     except:
-        print traceback.format_exc()
+        #print traceback.format_exc()
         return False
 
 
@@ -104,8 +104,6 @@ def upload():
             else:
                 # save file to disk
                 uploaded_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-		print app.config['UPLOAD_FOLDER'], filename
-                print uploaded_file_path
 		files.save(uploaded_file_path)
                 # create thumbnail after saving
                 if mime_type.startswith('image'):
@@ -174,7 +172,7 @@ def biblioteca():
 
 @app.route('/cargar_lista', methods=['GET', 'POST'])
 def cargar_lista():
-    video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+    video_files = [f for f in os.listdir(video_dir) if f.endswith(['mp4', 'ogv'])]
     #video_files = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', False)
     return render_template('cargar_lista.html', videos=video_files)
 
