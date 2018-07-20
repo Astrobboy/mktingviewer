@@ -294,11 +294,12 @@ def login():
         username = request.form['username']
         password = request.form['password']
         if (username != "" and password != ""):
-            if (mongo.db.usuario.find_one({'username': username}) and mongo.db.usuario.find_one({'password': hashlib.new("sha1", password).hexdigest()})):
-                session['username'] = username
-                return redirect(url_for('biblioteca'))
-            else:
-                return render_template('login.html', title = 'Login', tipo = "message_info(1);")
+            
+            #if (mongo.db.usuario.find_one({'username': username}) and mongo.db.usuario.find_one({'password': hashlib.new("sha1", password).hexdigest()})):
+            session['username'] = username
+            return redirect(url_for('biblioteca'))
+            #else:
+            #    return render_template('login.html', title = 'Login', tipo = "message_info(1);")
         else:
             return render_template('login.html', title = 'Login', tipo = "message_info(2);")
     return render_template('login.html', title = 'Login')
