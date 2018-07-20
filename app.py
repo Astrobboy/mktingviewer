@@ -19,6 +19,8 @@ import time
 import hashlib
 from datetime import timedelta
 
+from os import walk, getcwd
+
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
 
@@ -172,12 +174,30 @@ def biblioteca():
 
 @app.route('/cargar_lista', methods=['GET', 'POST'])
 def cargar_lista():
-    if 'username' in session:
-        video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
-        return render_template('cargar_lista.html', videos=video_files)
-    else:
-        return redirect(url_for('login'))
+    video_files = [f for f in os.listdir(video_dir) if f.endswith('mp4')]
+    #video_files = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', False)
+    return render_template('cargar_lista.html', videos=video_files)
 
+
+def ls(ruta=getcwd(), valor=True):
+    #listaarchivos = []
+    new_array = []
+    for (_, subdirs, archivos) in walk(ruta):
+        #elimino esta ruta
+        rut = _.lstrip('srv/mediagoblin.example.org/\
+        mediagoblin/user_dev/media/public/media_entries')
+        #prdeno la ruta de la url
+        rut = 'http://10.10.10.34:6543/mgoblin_media/media_entries/' + rut + '/'
+        
+
+        for archivo in archivos:
+            if not '.jpg' in archivo:  # agarra del array el que no tiene dentro .jpg
+                if valor:
+                    new_array.append(rut+archivo)
+                else:
+                    new_array.append(archivo)
+        #listaarchivos.extend(subdirs+archivos)
+    return new_array
 
 
 @app.route('/play', methods=['GET'])
@@ -199,7 +219,7 @@ def play():
         cont = datos_ip["cont"]
         video = datos_lista["lista"][cont]
         return render_template('repro_video.html',
-                                video = vide + video,
+                                video = video,
                                 tiempo = tiempo_actual,
                                 cont = cont
                                 )
@@ -219,7 +239,7 @@ def play():
             cont = mongo.db.Ip.find_one({'ip': ip})
             video = nom_video['lista'][cont['cont']]
             return render_template('repro_video.html',
-                                    video = vide + video,
+                                    video = video,
                                     cont = cont['cont']
                                     )
  
@@ -230,22 +250,30 @@ def selecciona():
 
 @app.route('/cargar_db',methods=['GET', 'POST'])
 def cargar_db():
-    if 'username' in session:
+    #if 'username' in session:
         if request.method == 'POST':
             #compruebo y creo collection video
             if (mongo.db.video.find({})):
                 #consulto si existe 0 = false, 1 = true
                 if(mongo.db.video.count({'_id': '1'})):
                     #si existe cambia la lista
-                    lista = request.form.getlist('select_video')
+                    listas = vide + request.form.getlist('select_video')
+                    #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
+                    #lista = []
+                    #for video_name in listas:
+                    #    for nom_video_server in array:
+                    #        if video_name in nom_video_server:
+                    #            lista.append(nom_video_server)
                    #obtengo datos de db, y cambio lista
                     mongo.db.video.replace_one({"_id":"1"}, {"lista":lista, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y')})
                 else:
                     # si no existe crea la lista
-                    mongo.db.video.insert_one({"_id":"1", "lista":[f for f in os.listdir(video_dir) if f.endswith('mp4')], "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
+                    #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
+                    array = vide + request.form.getlist('select_video')
+                    mongo.db.video.insert_one({"_id":"1", "lista":array, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
         return redirect(url_for('cargar_lista'))
-    else:
-        return redirect(url_for('login'))
+    #else:
+    #    return redirect(url_for('login'))
 
 @app.route('/producto/<id>',methods=['GET'])
 def index(id):
@@ -311,7 +339,6 @@ def handle_connection():
             if (data_ip['creacion'] == data_video['creacion']):
                 # si es solo almaceno tiempo y cont
                 if (len(data_video['lista']) <=  request.json["cont"]):
-                    #print "estoy aqui y no deberia"
                     data_ip['cont'] = 0 
                 else:                  
                     #print "estoy aqui y no deberia >>> %d <= %d" %(len(data_video['lista']),request.json["cont"])
@@ -336,6 +363,12 @@ def handle_connection():
 def prueba():
     return render_template('prueba.html')
 
+
+@app.route("/lista", methods=['GET', 'POST'])
+def lista(lista=[]):
+    #lista  = request.args.get('lista')
+    print request.get_data("lista")
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
  
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
