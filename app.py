@@ -18,9 +18,10 @@ from lib.upload_file import uploadfile
 import time
 import hashlib
 from datetime import timedelta
+import ffmpy
 
-from os import walk, getcwd
-from flask_cors import CORS
+#from flask_cors import CORS
+#import ipdb
 
 video_dir = os.getcwd()+'/data/'
 vide = '../data/'
@@ -30,7 +31,7 @@ vide = '../data/'
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=61200)
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+#cors = CORS(app, resources={r"/*": {"origins": "*"}})
 mongo = PyMongo(app)
 #csrf = CSRFProtect(app)
 
@@ -39,7 +40,7 @@ IGNORED_FILES = set(['.gitignore'])
 
 
 bootstrap = Bootstrap(app)
-socketio = SocketIO(app)   
+socketio = SocketIO(app)
 
 
 def saber_ip():
@@ -97,7 +98,7 @@ def upload():
 
         if files:
             filename = secure_filename(files.filename)
-            filename = gen_file_name(filename)    
+            filename = gen_file_name(filename)
             mime_type = files.content_type
 
             if not allowed_file(files.filename):
@@ -110,18 +111,36 @@ def upload():
                 # create thumbnail after saving
                 if mime_type.startswith('image'):
                     create_thumbnail(filename)
-                
+                #convert video .ogv
+
+
+                ruta = os.getcwd() + '/data'
+                for filename in os.listdir(ruta):
+                    actual_filename = filename[:-4]
+                    if(filename.endswith(".mp4")):
+                        #os.system('ffmpeg -i {} -c:v libvpx -b:v 1M -c:a libvorbis  {}.ogg'.format(filename, actual_filename))
+                        os.system('cd {} && ffmpeg -i {} -c:v libtheora -b:v 3M  -c:a libvorbis -y  {}.ogv'.format(ruta, filename, actual_filename))
+
                 # get file size after saving
                 size = os.path.getsize(uploaded_file_path)
-
                 # return json for js call back
                 result = uploadfile(name=filename, type=mime_type, size=size)
-            return simplejson.dumps({"files": [result.get_file()]})
+                #elimina el mp4
+                os.system('cd {} && rm *.mp4'.format(ruta))
+            
+                files = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'],f)) and f not in IGNORED_FILES ]
+                file_display = []
+
+                for f in files:
+                    size = os.path.getsize(os.path.join(app.config['UPLOAD_FOLDER'], f))
+                    file_saved = uploadfile(name=f, size=size)
+                    file_display.append(file_saved.get_file())
+                return simplejson.dumps({"files": [result.get_file()]})
 
     if request.method == 'GET':
         # get all file in ./data directory
         files = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'],f)) and f not in IGNORED_FILES ]
-        
+
         file_display = []
 
         for f in files:
@@ -145,7 +164,7 @@ def delete(filename):
 
             if os.path.exists(file_thumb_path):
                 os.remove(file_thumb_path)
-            
+
             return simplejson.dumps({filename: 'True'})
         except:
             return simplejson.dumps({filename: 'False'})
@@ -175,46 +194,25 @@ def biblioteca():
 @app.route('/cargar_lista', methods=['GET', 'POST'])
 def cargar_lista():
     video_files = [f for f in os.listdir(video_dir) if f.endswith('ogv')]
-    #video_files = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', False)
     return render_template('cargar_lista.html', videos=video_files)
 
 
-def ls(ruta=getcwd(), valor=True):
-    #listaarchivos = []
-    new_array = []
-    for (_, subdirs, archivos) in walk(ruta):
-        #elimino esta ruta
-        rut = _.lstrip('srv/mediagoblin.example.org/\
-        mediagoblin/user_dev/media/public/media_entries')
-        #prdeno la ruta de la url
-        rut = 'http://10.10.10.34:6543/mgoblin_media/media_entries/' + rut + '/'
-        
-
-        for archivo in archivos:
-            if not '.jpg' in archivo:  # agarra del array el que no tiene dentro .jpg
-                if valor:
-                    new_array.append(rut+archivo)
-                else:
-                    new_array.append(archivo)
-        #listaarchivos.extend(subdirs+archivos)
-    return new_array
-
-
 @app.route('/play', methods=['GET'])
-def play():
+@app.route('/play/<data>', methods=['GET'])
+def play(data={}):
     time.sleep(0.3)
     ip = saber_ip()
     if(mongo.db.Ip.find_one({'ip': ip })):
         #traigo datos de tabla Ip y video para comparar sus fechas
         datos_lista = mongo.db.video.find_one({'_id': '1'})
-        datos_ip = mongo.db.Ip.find_one({'ip': ip}) 
+        datos_ip = mongo.db.Ip.find_one({'ip': ip})
         if(datos_lista['creacion'] != datos_ip['creacion']):
             #actualizo la creacion en la tabla Ip
             mongo.db.Ip.update({"ip":ip}, {'$set':{'creacion': datos_lista['creacion']}})
-            mongo.db.Ip.update({"ip":ip}, {'$set':{'cont': 0 }}) 
+            mongo.db.Ip.update({"ip":ip}, {'$set':{'cont': 0 }})
         #vuelvo a traer los datos de ip
-        datos_ip = mongo.db.Ip.find_one({'ip': ip})  
-        #preparo para enviar 
+        datos_ip = mongo.db.Ip.find_one({'ip': ip})
+        #preparo para enviar
         tiempo_actual = datos_ip["tiempo"]
         cont = datos_ip["cont"]
         video = datos_lista["lista"][cont]
@@ -225,7 +223,7 @@ def play():
                                 )
     else:
         datos_lista = mongo.db.video.count({'_id': '1'})
-        if datos_lista: 
+        if datos_lista:
             #obtengo la columna 1, con el fin de obtener la creacion de la lista
             data_video = mongo.db.video.find_one({'_id': '1'})
             #Inserto el primer elemento para esta ip
@@ -242,7 +240,7 @@ def play():
                                     video = video,
                                     cont = cont['cont']
                                     )
- 
+
 
 @app.route('/selecciona',methods=['GET'])
 def selecciona():
@@ -251,29 +249,29 @@ def selecciona():
 @app.route('/cargar_db',methods=['GET', 'POST'])
 def cargar_db():
     #if 'username' in session:
-        if request.method == 'POST':
-            #compruebo y creo collection video
-            if (mongo.db.video.find({})):
-                #consulto si existe 0 = false, 1 = true
-                if(mongo.db.video.count({'_id': '1'})):
-                    #si existe cambia la lista
-                    listas = [vide + f for f in request.form.getlist('select_video')]
-                    #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
-                    #lista = []
-                    #for video_name in listas:
-                    #    for nom_video_server in array:
-                    #        if video_name in nom_video_server:
-                    #            lista.append(nom_video_server)
-                   #obtengo datos de db, y cambio lista
-                    mongo.db.video.replace_one({"_id":"1"}, {"lista":listas, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y')})
-                else:
-                    # si no existe crea la lista
-                    #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
-                    array = [vide + f for f in request.form.getlist('select_video')]
-                    mongo.db.video.insert_one({"_id":"1", "lista":array, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
-        return redirect(url_for('cargar_lista'))
-    #else:
-    #    return redirect(url_for('login'))
+    if request.method == 'POST':
+        #compruebo y creo collection video
+        if (mongo.db.video.find({})):
+            #consulto si existe 0 = false, 1 = true
+            if(mongo.db.video.count({'_id': '1'})):
+                #si existe cambia la lista
+                listas = [vide + f for f in request.form.getlist('select_video')]
+                #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
+                #lista = []
+                #for video_name in listas:
+                #    for nom_video_server in array:
+                #        if video_name in nom_video_server:
+                #            lista.append(nom_video_server)
+                #obtengo datos de db, y cambio lista
+                mongo.db.video.replace_one({"_id":"1"}, {"lista":listas, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y')})
+            else:
+                # si no existe crea la lista
+                #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
+                array = [vide + f for f in request.form.getlist('select_video')]
+                mongo.db.video.insert_one({"_id":"1", "lista":array, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
+    return redirect(url_for('cargar_lista'))
+#else:
+#    return redirect(url_for('login'))
 
 @app.route('/producto/<id>',methods=['GET'])
 def index(id):
@@ -294,7 +292,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         if (username != "" and password != ""):
-            
+
             #if (mongo.db.usuario.find_one({'username': username}) and mongo.db.usuario.find_one({'password': hashlib.new("sha1", password).hexdigest()})):
             session['username'] = username
             return redirect(url_for('biblioteca'))
@@ -323,7 +321,7 @@ def nuevo_usuario():
                 else:
                     return render_template('crear_usuario.html', title = 'Nuevo_User', tipo='message_info(2);')
             else:
-                return render_template('crear_usuario.html', title = 'Nuevo_User') 
+                return render_template('crear_usuario.html', title = 'Nuevo_User')
         else:
             return render_template('home.html', title = "Home", tipo='message_info(4);')
     return redirect(url_for('login'))
@@ -332,6 +330,7 @@ def nuevo_usuario():
 def handle_connection():
     if request.method == 'POST':
         #print(str(request.json["tiempo"])+";" + str(request.json["cont"]));
+        print "datos"
         ip = saber_ip()
         data_video = mongo.db.video.find_one({'_id': '1'})
         if (mongo.db.Ip.find_one({'ip': ip})):
@@ -340,8 +339,8 @@ def handle_connection():
             if (data_ip['creacion'] == data_video['creacion']):
                 # si es solo almaceno tiempo y cont
                 if (len(data_video['lista']) <=  request.json["cont"]):
-                    data_ip['cont'] = 0 
-                else:                  
+                    data_ip['cont'] = 0
+                else:
                     #print "estoy aqui y no deberia >>> %d <= %d" %(len(data_video['lista']),request.json["cont"])
                     data_ip['cont'] = request.json["cont"]
             else:
@@ -352,11 +351,11 @@ def handle_connection():
         else:
             datos = { "cont" : request.json["cont"], "tiempo" : request.json["tiempo"]}
             data_video = mongo.db.video.find_one({'_id': '1'})
-            datos['ip'] = ip 
+            datos['ip'] = ip
             datos['creacion'] = data_video['creacion']
             #almaceno
-            mongo.db.Ip.insert_one(datos) 
-    return "ok"
+            mongo.db.Ip.insert_one(datos)
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 #para obtener cookie
 #request.cookies.get('nomcookie')
 

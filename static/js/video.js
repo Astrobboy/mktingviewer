@@ -15,7 +15,9 @@ window.onbeforeunload = function(event) {
     if (video.currentTime == video.duration) {
         cont += 1;
     }
+    console.log(tiempo_actual)
     envio_json(cont, tiempo_actual);
+
 }
 
 //funcion que esta a la escucha de cuando termine el video
@@ -25,15 +27,24 @@ video.addEventListener("ended", function() {
 
 
 function envio_json(cont, tiempo) {
+
+
     $.ajax({
         type: "POST",
-        url: "http://10.10.10.34:5000/datos",
+        url: "http://127.0.0.1:5000/datos",
         data: JSON.stringify({
             "cont": cont,
             "tiempo": tiempo
         }),
-        contentType: 'application/json'
-    });
+        contentType: 'application/json',
+        /*success: function(response) {
+            alert("Details saved successfully!!!");
+        },
+        error: function(Response) {
+            console.log(Response);
+            alert("esperar");
+        }*/
+    })
 
 }
 
