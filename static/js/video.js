@@ -31,7 +31,7 @@ function envio_json(cont, tiempo) {
 
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:5000/datos",
+        url: "http://10.10.10.34:5000/datos",
         data: JSON.stringify({
             "cont": cont,
             "tiempo": tiempo
