@@ -199,8 +199,7 @@ def cargar_lista():
 
 
 @app.route('/play', methods=['GET'])
-@app.route('/play/<data>', methods=['GET'])
-def play(data={}):
+def play():
     time.sleep(0.3)
     ip = saber_ip()
     if(mongo.db.Ip.find_one({'ip': ip })):
@@ -364,4 +363,4 @@ def handle_connection():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=False, host="0.0.0.0")
