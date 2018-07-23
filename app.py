@@ -255,7 +255,7 @@ def cargar_db():
             #consulto si existe 0 = false, 1 = true
             if(mongo.db.video.count({'_id': '1'})):
                 #si existe cambia la lista
-                listas = ['data/' + f for f in request.form.getlist('select_video')]
+                listas = ['/data/' + f for f in request.form.getlist('select_video')]
                 #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
                 #lista = []
                 #for video_name in listas:
@@ -267,7 +267,7 @@ def cargar_db():
             else:
                 # si no existe crea la lista
                 #array = ls('/srv/mediagoblin/mediagoblin/user_dev/media/public/media_entries', True)
-                array = ['data/' + f for f in request.form.getlist('select_video')]
+                array = ['/data/' + f for f in request.form.getlist('select_video')]
                 mongo.db.video.insert_one({"_id":"1", "lista":array, "creacion": time.strftime('%l:%M %p %Z on %b %d, %Y') })
     return redirect(url_for('cargar_lista'))
 #else:
