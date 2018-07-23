@@ -20,7 +20,7 @@ import hashlib
 from datetime import timedelta
 import ffmpy
 
-#from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 #import ipdb
 
 video_dir = os.getcwd()+'/data/'
@@ -32,6 +32,7 @@ app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=61200)
 #cors = CORS(app, resources={r"/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/datos": {"origins": "*"}})
 mongo = PyMongo(app)
 #csrf = CSRFProtect(app)
 
@@ -127,7 +128,7 @@ def upload():
                 result = uploadfile(name=filename, type=mime_type, size=size)
                 #elimina el mp4
                 os.system('cd {} && rm *.mp4'.format(ruta))
-            
+
                 files = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'],f)) and f not in IGNORED_FILES ]
                 file_display = []
 
@@ -327,6 +328,7 @@ def nuevo_usuario():
     return redirect(url_for('login'))
 
 @app.route("/datos", methods = ['GET', 'POST'])
+@cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def handle_connection():
     if request.method == 'POST':
         #print(str(request.json["tiempo"])+";" + str(request.json["cont"]));
@@ -359,9 +361,6 @@ def handle_connection():
 #para obtener cookie
 #request.cookies.get('nomcookie')
 
-@app.route("/prueba", methods = ['GET', 'POST'])
-def prueba():
-    return render_template('prueba.html')
 
 
 if __name__ == '__main__':
