@@ -33,6 +33,7 @@ app.config.from_pyfile('config.cfg')
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=61200)
 #cors = CORS(app, resources={r"/*": {"origins": "*"}})
 cors = CORS(app, resources={r"/datos": {"origins": "*"}})
+logging.getLogger('flask_cors').level = logging.DEBUG
 mongo = PyMongo(app)
 #csrf = CSRFProtect(app)
 
