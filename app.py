@@ -31,9 +31,10 @@ vide = '../data/'
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=61200)
-#cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
 cors = CORS(app, resources={r"/datos": {"origins": "*"}})
-logging.getLogger('flask_cors').level = logging.DEBUG
+cors = CORS(app, resources={r"/play": {"origins": "*"}})
+
 mongo = PyMongo(app)
 #csrf = CSRFProtect(app)
 
@@ -200,6 +201,7 @@ def cargar_lista():
 
 
 @app.route('/play', methods=['GET'])
+@cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def play():
     time.sleep(0.3)
     ip = saber_ip()
