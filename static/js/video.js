@@ -15,7 +15,6 @@ window.onbeforeunload = function(event) {
     if (video.currentTime == video.duration) {
         cont += 1;
     }
-    console.log(tiempo_actual)
     envio_json(cont, tiempo_actual);
 
 }
