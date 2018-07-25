@@ -217,12 +217,12 @@ def play():
         #vuelvo a traer los datos de ip
         datos_ip = mongo.db.Ip.find_one({'ip': ip})
         #preparo para enviar
-        tiempo_actual = datos_ip["tiempo"]
+        #tiempo_actual = datos_ip["tiempo"]
         cont = datos_ip["cont"]
         video = datos_lista["lista"][cont]
         return render_template('repro_video.html',
                                 video = video,
-                                tiempo = tiempo_actual,
+                                #tiempo = tiempo_actual,
                                 cont = cont
                                 )
     else:
@@ -234,7 +234,7 @@ def play():
             mongo.db.Ip.insert_one({
                                     "ip": ip,
                                     "cont": 0,
-                                    "tiempo":  0,
+                                   # "tiempo":  0,
                                     "creacion": data_video['creacion']
                                     })
             nom_video = mongo.db.video.find_one({'_id': '1'})
@@ -342,7 +342,7 @@ def handle_connection():
             else:
                 data_ip['creacion'] = data_video['creacion']
                 data_ip['cont'] = 0
-            data_ip['tiempo'] = request.json["tiempo"]
+            #data_ip['tiempo'] = request.json["tiempo"]
             mongo.db.Ip.replace_one({'ip': ip}, data_ip)
         else:
             datos = { "cont" : request.json["cont"], "tiempo" : request.json["tiempo"]}
