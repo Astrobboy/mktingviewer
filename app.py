@@ -197,7 +197,7 @@ def biblioteca():
 
 @app.route('/cargar_lista', methods=['GET', 'POST'])
 def cargar_lista():
-    video_files = [f for f in os.listdir(video_dir) if f.endswith('ogv')]
+    video_files = [f for f in os.listdir(video_dir) if f.endswith('webm')]
     return render_template('cargar_lista.html', videos=video_files)
 
 
