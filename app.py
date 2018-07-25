@@ -121,7 +121,7 @@ def upload():
                 for filename in os.listdir(ruta):
                     actual_filename = filename[:-4]
                     if(filename.endswith(".mp4")):
-                        os.system('cd {} && ffmpeg -i {}.mp4 -c:v libvpx -crf 10 -b:v 1M -c:a libvorbis {}.webm'.format(ruta, filename, actual_filename))
+                        os.system('cd {} && ffmpeg -i {} -c:v libvpx -crf 10 -b:v 1M -c:a libvorbis {}.webm'.format(ruta, filename, actual_filename))
                         #os.system('ffmpeg -i {} -c:v libvpx -b:v 1M -c:a libvorbis  {}.ogg'.format(filename, actual_filename))
                         #os.system('cd {} && ffmpeg -i {} -c:v libtheora -b:v 3M  -c:a libvorbis -y  {}.ogv'.format(ruta, filename, actual_filename))
 
