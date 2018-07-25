@@ -38,7 +38,7 @@ cors = CORS(app, resources={r"/play": {"origins": "*"}})
 mongo = PyMongo(app)
 #csrf = CSRFProtect(app)
 
-ALLOWED_EXTENSIONS = set(['mp4', 'ogv'])
+ALLOWED_EXTENSIONS = set(['mp4', 'webm'])
 IGNORED_FILES = set(['.gitignore'])
 
 
