@@ -4,12 +4,23 @@
 <head>
     <title></title>
     <meta charset="UTF-8">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js?ver=3.0.1"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/infinite-rotator.js') }}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 
 <body>
-    <img class="image" src="../static/img/atacado.png" />
+    <div class="fotos">
+        <div class="foto_ativa" id="foto_ativa">
+            <img class="rotating-item image" src="../static/img/go_sat.jpeg" />
+            <img class="rotating-item image" src="../static/img/nintendo.jpeg" />
+            <img class="rotating-item image" src="../static/img/pro_mountain.jpeg" />
+            <img class="rotating-item image" src="../static/img/quanta.jpeg" />
+            <img class="rotating-item image" src="../static/img/sony.jpeg" />
+            <img class="rotating-item image" src="../static/img/steel_series.jpeg" />
+        </div>
+    </div>
 </body>
 
 </html>
