@@ -3,7 +3,7 @@ import simplejson
 import traceback
 import json
 import subprocess
-import pdb
+
 
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory, g
 from flask_socketio import SocketIO,send, emit
@@ -200,6 +200,9 @@ def cargar_lista():
     video_files = [f for f in os.listdir(video_dir) if f.endswith('webm')]
     return render_template('cargar_lista.html', videos=video_files)
 
+@app.route('/image')
+def image():
+    return render_template('image.html')
 
 @app.route('/play', methods=['GET'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
